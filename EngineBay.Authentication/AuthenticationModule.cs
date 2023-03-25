@@ -69,7 +69,6 @@ namespace EngineBay.Authentication
                     tokenValidationParameters.ValidateIssuerSigningKey = true;
                     tokenValidationParameters.TryAllIssuerSigningKeys = true;
                     tokenValidationParameters.IssuerSigningKey = signingKey;
-                    tokenValidationParameters.IssuerSigningKeys = new List<SecurityKey>() { signingKey };
                 }
                 else
                 {
@@ -133,8 +132,8 @@ namespace EngineBay.Authentication
                     tokenValidationParameters.ValidateLifetime = false;
                     tokenValidationParameters.RequireExpirationTime = false;
                 }
-
-                options.IncludeErrorDetails = true;
+            
+                options.IncludeErrorDetails = false;
                 options.Authority = AuthenticationConfiguration.GetAuthority();
                 options.TokenValidationParameters = tokenValidationParameters;
                 options.RequireHttpsMetadata = false;
