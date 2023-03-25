@@ -88,7 +88,7 @@ namespace EngineBay.Authentication
 
                 options.TokenValidationParameters = tokenValidationParameters;
             });
-            
+
             services.AddAuthorization();
 
             // register persistence services
