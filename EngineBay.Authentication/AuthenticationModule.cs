@@ -5,6 +5,7 @@ namespace EngineBay.Authentication
     using System.Text;
     using EngineBay.Core;
     using EngineBay.Persistence;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.IdentityModel.Tokens;
 
     public class AuthenticationModule : IModule
@@ -20,7 +21,12 @@ namespace EngineBay.Authentication
             services.AddTransient<GetCurrentUser>();
 
             // register authentication services
-            services.AddAuthentication().AddJwtBearer("Bearer", options =>
+            services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer("Bearer", options =>
             {
                 var algorithm = AuthenticationConfiguration.GetAlgorithm();
                 var secretKey = AuthenticationConfiguration.GetSigningKey();
@@ -45,9 +51,10 @@ namespace EngineBay.Authentication
                 var tokenValidationParameters = new TokenValidationParameters()
                 {
                     ValidAlgorithms = AuthenticationConfiguration.GetAlgorithms(),
-
+                    ValidateActor = false,
+                    ValidateTokenReplay = false,
                     // If you want to allow a certain amount of clock drift, set that here:
-                    ClockSkew = TimeSpan.Zero,
+                    ClockSkew = TimeSpan.FromSeconds(5.0),
                 };
 
                 if (AuthenticationConfiguration.ShouldValidateIssuerSigningKey())
@@ -87,6 +94,7 @@ namespace EngineBay.Authentication
                 }
 
                 options.TokenValidationParameters = tokenValidationParameters;
+                options.RequireHttpsMetadata = false;
             });
 
             services.AddAuthorization();
