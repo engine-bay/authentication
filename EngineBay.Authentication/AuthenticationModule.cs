@@ -1,5 +1,6 @@
 namespace EngineBay.Authentication
 {
+    using System.IdentityModel.Tokens.Jwt;
     using System.Security.Claims;
     using System.Security.Cryptography;
     using System.Text;
@@ -28,6 +29,7 @@ namespace EngineBay.Authentication
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer("Bearer", options =>
             {
+#pragma warning disable CA5404 // we allow disabling of important validation here since we're trying to make it configurable
                 var algorithm = AuthenticationConfiguration.GetAlgorithm();
                 var secretKey = AuthenticationConfiguration.GetSigningKey();
                 byte[] key;
@@ -66,10 +68,25 @@ namespace EngineBay.Authentication
                     tokenValidationParameters.IssuerSigningKey = signingKey;
                     tokenValidationParameters.IssuerSigningKeys = new List<SecurityKey>() { signingKey };
                 }
+                else
+                {
+                    tokenValidationParameters.ValidateIssuerSigningKey = false;
+                    tokenValidationParameters.TryAllIssuerSigningKeys = false;
+                    tokenValidationParameters.SignatureValidator = (token, parameters) =>
+                    {
+                        var jwt = new JwtSecurityToken(token);
+
+                        return jwt;
+                    };
+                }
 
                 if (AuthenticationConfiguration.ShouldValidateSignedTokens())
                 {
                     tokenValidationParameters.RequireSignedTokens = true;
+                }
+                else
+                {
+                    tokenValidationParameters.RequireSignedTokens = false;
                 }
 
                 if (AuthenticationConfiguration.ShouldValidateIssuer())
@@ -80,6 +97,10 @@ namespace EngineBay.Authentication
                     tokenValidationParameters.ValidIssuers = AuthenticationConfiguration.GetIssuers();
                     tokenValidationParameters.ValidIssuer = issuer;
                     options.ClaimsIssuer = issuer;
+                }
+                else
+                {
+                    tokenValidationParameters.ValidateIssuer = false;
                 }
 
                 if (AuthenticationConfiguration.ShouldValidateAudience())
@@ -92,6 +113,11 @@ namespace EngineBay.Authentication
                     tokenValidationParameters.ValidAudience = audience;
                     options.Audience = audience;
                 }
+                else
+                {
+                    tokenValidationParameters.RequireAudience = false;
+                    tokenValidationParameters.ValidateAudience = false;
+                }
 
                 if (AuthenticationConfiguration.ShouldValidateExpiry())
                 {
@@ -99,10 +125,16 @@ namespace EngineBay.Authentication
                     tokenValidationParameters.ValidateLifetime = true;
                     tokenValidationParameters.RequireExpirationTime = true;
                 }
+                else
+                {
+                    tokenValidationParameters.ValidateLifetime = false;
+                    tokenValidationParameters.RequireExpirationTime = false;
+                }
 
                 options.Authority = AuthenticationConfiguration.GetAuthority();
                 options.TokenValidationParameters = tokenValidationParameters;
                 options.RequireHttpsMetadata = false;
+#pragma warning restore CA5404
             });
 
             services.AddAuthorization();
