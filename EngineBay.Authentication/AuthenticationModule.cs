@@ -53,6 +53,7 @@ namespace EngineBay.Authentication
                     ValidAlgorithms = AuthenticationConfiguration.GetAlgorithms(),
                     ValidateActor = false,
                     ValidateTokenReplay = false,
+
                     // If you want to allow a certain amount of clock drift, set that here:
                     ClockSkew = TimeSpan.FromSeconds(5.0),
                 };
