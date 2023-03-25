@@ -46,7 +46,9 @@ namespace EngineBay.Authentication
                 {
                     // The signing key must match!
                     ValidateIssuerSigningKey = true,
+                    TryAllIssuerSigningKeys = true,
                     IssuerSigningKey = signingKey,
+                    IssuerSigningKeys = new List<SecurityKey>() { signingKey },
                     RequireSignedTokens = true,
                     ValidAlgorithms = AuthenticationConfiguration.GetAlgorithms(),
 
