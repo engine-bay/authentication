@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/EngineBay.ModuleTemplate.Tests/EngineBay.ModuleTemplate.Tests.csproj",
+                "${workspaceFolder}/EngineBay.Authentication.Tests/EngineBay.Authentication.Tests.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/EngineBay.ModuleTemplate.Tests/EngineBay.ModuleTemplate.Tests.csproj",
+                "${workspaceFolder}/EngineBay.Authentication.Tests/EngineBay.Authentication.Tests.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -33,7 +33,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/EngineBay.ModuleTemplate.Tests/EngineBay.ModuleTemplate.Tests.csproj"
+                "${workspaceFolder}/EngineBay.Authentication.Tests/EngineBay.Authentication.Tests.csproj"
             ],
             "problemMatcher": "$msCompile"
         }

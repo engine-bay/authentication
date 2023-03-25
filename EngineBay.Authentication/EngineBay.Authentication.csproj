@@ -2,18 +2,18 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <RootNamespace>EngineBay.ModuleTemplate</RootNamespace>
+    <RootNamespace>EngineBay.Authentication</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <PackageId>EngineBay.ModuleTemplate</PackageId>
+    <PackageId>EngineBay.Authentication</PackageId>
     <Version>0.0.2</Version>
     <Authors>EngineBay</Authors>
     <Company>EngineBay</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
-    <PackageProjectUrl>https://github.com/engine-bay/module-template</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/engine-bay/module-template</RepositoryUrl>
+    <PackageProjectUrl>https://github.com/engine-bay/authentication</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/engine-bay/authentication</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <TargetType>library</TargetType>
     <IsPackable>true</IsPackable>
@@ -27,6 +27,8 @@
 
   <ItemGroup>
     <PackageReference Include="EngineBay.Core" Version="3.0.0" />
+    <PackageReference Include="EngineBay.Persistence" Version="2.5.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.4" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>

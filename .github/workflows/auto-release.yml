@@ -22,5 +22,5 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.AUTO_RELEASE_GITHUB_TOKEN }}
         WITH_V: false
-        DRY_RUN: true ## remove this when you're ready to start releasing. This also prevents the module template from being released to nuget.
+        # DRY_RUN: true
         DEFAULT_BUMP: none

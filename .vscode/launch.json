@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/EngineBay.ModuleTemplate.Tests/bin/Debug/net7.0/EngineBay.ModuleTemplate.Tests.dll",
+            "program": "${workspaceFolder}/EngineBay.Authentication.Tests/bin/Debug/net7.0/EngineBay.Authentication.Tests.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/EngineBay.ModuleTemplate.Tests",
+            "cwd": "${workspaceFolder}/EngineBay.Authentication.Tests",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
             "stopAtEntry": false

@@ -1,3 +1,3 @@
-# EngineBay.ModuleTemplate
+# EngineBay.Authentication
 
-ModuleTemplate module for EngineBay published to [EngineBay.ModuleTemplate](https://www.nuget.org/packages/EngineBay.ModuleTemplate/) on NuGet.
+Authentication module for EngineBay published to [EngineBay.Authentication](https://www.nuget.org/packages/EngineBay.Authentication/) on NuGet.

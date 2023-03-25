@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
-    <RootNamespace>EngineBay.ModuleTemplate.Tests</RootNamespace>
+    <RootNamespace>EngineBay.Authentication.Tests</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 
@@ -34,7 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\EngineBay.ModuleTemplate\EngineBay.ModuleTemplate.csproj" />
+    <ProjectReference Include="..\EngineBay.Authentication\EngineBay.Authentication.csproj" />
   </ItemGroup>
 
   <ItemGroup>

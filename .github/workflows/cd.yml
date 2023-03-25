@@ -23,4 +23,4 @@ jobs:
     - name: Package
       run: dotnet pack -p:PackageVersion=${{  github.ref_name }} -c release
     - name: Publish
-      run: dotnet nuget push ./EngineBay.ModuleTemplate/bin/Release/EngineBay.ModuleTemplate.${{  github.ref_name }}.nupkg --api-key "${{ secrets.NUGET_PUBLISHING_API_KEY }}" --source "https://api.nuget.org/v3/index.json"
+      run: dotnet nuget push ./EngineBay.Authentication/bin/Release/EngineBay.Authentication.${{  github.ref_name }}.nupkg --api-key "${{ secrets.NUGET_PUBLISHING_API_KEY }}" --source "https://api.nuget.org/v3/index.json"
