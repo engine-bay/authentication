@@ -27,7 +27,7 @@ namespace EngineBay.Authentication
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer("Bearer", options =>
+            }).AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
             {
 #pragma warning disable CA5404 // we allow disabling of important validation here since we're trying to make it configurable
                 var algorithm = AuthenticationConfiguration.GetAlgorithm();
@@ -48,7 +48,9 @@ namespace EngineBay.Authentication
                         throw new ArgumentException("Unsupported Signing Algorithm");
                 }
 
-                var signingKey = new SymmetricSecurityKey(key);
+                var signingKey = new SymmetricSecurityKey(key){
+                    KeyId = algorithm.ToString()
+                };
 
                 var tokenValidationParameters = new TokenValidationParameters()
                 {
@@ -131,6 +133,7 @@ namespace EngineBay.Authentication
                     tokenValidationParameters.RequireExpirationTime = false;
                 }
 
+                options.IncludeErrorDetails = true;
                 options.Authority = AuthenticationConfiguration.GetAuthority();
                 options.TokenValidationParameters = tokenValidationParameters;
                 options.RequireHttpsMetadata = false;
