@@ -42,33 +42,53 @@ namespace EngineBay.Authentication
 
                 var signingKey = new SymmetricSecurityKey(key);
 
-                options.TokenValidationParameters = new TokenValidationParameters()
+                var tokenValidationParameters = new TokenValidationParameters()
                 {
-                    // The signing key must match!
-                    ValidateIssuerSigningKey = AuthenticationConfiguration.ShouldValidateIssuerSigningKey(),
-                    TryAllIssuerSigningKeys = AuthenticationConfiguration.ShouldValidateIssuerSigningKey(),
-                    IssuerSigningKey = signingKey,
-                    IssuerSigningKeys = new List<SecurityKey>() { signingKey },
-                    RequireSignedTokens = AuthenticationConfiguration.ShouldValidateSignedTokens(),
                     ValidAlgorithms = AuthenticationConfiguration.GetAlgorithms(),
-
-                    // Validate the JWT Issuer (iss) claim
-                    ValidateIssuer = AuthenticationConfiguration.ShouldValidateIssuer(),
-                    ValidIssuers = AuthenticationConfiguration.GetIssuers(),
-
-                    // Validate the JWT Audience (aud) claim
-                    RequireAudience = AuthenticationConfiguration.ShouldValidateAudience(),
-                    ValidateAudience = AuthenticationConfiguration.ShouldValidateAudience(),
-                    ValidAudiences = AuthenticationConfiguration.GetAudiences(),
-
-                    // Validate the token expiry
-                    ValidateLifetime = AuthenticationConfiguration.ShouldValidateExpiry(),
-                    RequireExpirationTime = AuthenticationConfiguration.ShouldValidateExpiry(),
 
                     // If you want to allow a certain amount of clock drift, set that here:
                     ClockSkew = TimeSpan.Zero,
                 };
+
+                if (AuthenticationConfiguration.ShouldValidateIssuerSigningKey())
+                {
+                    // The signing key must match!
+                    tokenValidationParameters.ValidateIssuerSigningKey = true;
+                    tokenValidationParameters.TryAllIssuerSigningKeys = true;
+                    tokenValidationParameters.IssuerSigningKey = signingKey;
+                    tokenValidationParameters.IssuerSigningKeys = new List<SecurityKey>() { signingKey };
+                }
+
+                if (AuthenticationConfiguration.ShouldValidateSignedTokens())
+                {
+                    tokenValidationParameters.RequireSignedTokens = true;
+                }
+
+                if (AuthenticationConfiguration.ShouldValidateIssuer())
+                {
+                    // Validate the JWT Issuer (iss) claim
+                    tokenValidationParameters.ValidateIssuer = true;
+                    tokenValidationParameters.ValidIssuers = AuthenticationConfiguration.GetIssuers();
+                }
+
+                if (AuthenticationConfiguration.ShouldValidateAudience())
+                {
+                    // Validate the JWT Audience (aud) claim
+                    tokenValidationParameters.RequireAudience = true;
+                    tokenValidationParameters.ValidateAudience = true;
+                    tokenValidationParameters.ValidAudiences = AuthenticationConfiguration.GetAudiences();
+                }
+
+                if (AuthenticationConfiguration.ShouldValidateExpiry())
+                {
+                    // Validate the token expiry
+                    tokenValidationParameters.ValidateLifetime = true;
+                    tokenValidationParameters.RequireExpirationTime = true;
+                }
+
+                options.TokenValidationParameters = tokenValidationParameters;
             });
+            
             services.AddAuthorization();
 
             // register persistence services
