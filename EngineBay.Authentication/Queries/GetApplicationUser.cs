@@ -7,10 +7,12 @@ namespace EngineBay.Authentication
 
     public class GetApplicationUser : IQueryHandler<ClaimsPrincipal, ApplicationUser>
     {
+        private readonly ILogger<GetApplicationUser> logger;
         private readonly AuthenticationQueryDbContext authenticationQueryDbContext;
 
-        public GetApplicationUser(AuthenticationQueryDbContext authenticationQueryDbContext)
+        public GetApplicationUser(ILogger<GetApplicationUser> logger, AuthenticationQueryDbContext authenticationQueryDbContext)
         {
+            this.logger = logger;
             this.authenticationQueryDbContext = authenticationQueryDbContext;
         }
 
@@ -31,6 +33,7 @@ namespace EngineBay.Authentication
 
             if (applicationUser is null)
             {
+                this.logger.UserDoesNotExist();
                 throw new ArgumentException(nameof(applicationUser));
             }
 

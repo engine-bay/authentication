@@ -6,10 +6,12 @@ namespace EngineBay.Authentication
 
     public class GetCurrentUser : IQueryHandler<ClaimsPrincipal, ApplicationUserDto>
     {
+        private readonly ILogger<GetCurrentUser> logger;
         private readonly AuthenticationQueryDbContext authenticationQueryDbContext;
 
-        public GetCurrentUser(AuthenticationQueryDbContext authenticationQueryDbContext)
+        public GetCurrentUser(ILogger<GetCurrentUser> logger, AuthenticationQueryDbContext authenticationQueryDbContext)
         {
+            this.logger = logger;
             this.authenticationQueryDbContext = authenticationQueryDbContext;
         }
 
@@ -30,6 +32,7 @@ namespace EngineBay.Authentication
 
             if (applicationUser is null)
             {
+                this.logger.UserDoesNotExist();
                 throw new ArgumentException(nameof(applicationUser));
             }
 
