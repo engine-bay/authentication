@@ -89,5 +89,120 @@ namespace EngineBay.Authentication
 
             return signingKeyEnvironmentVariable;
         }
+
+        public static bool ShouldValidateAudience()
+        {
+            var audienceValidationEnvironmentVariable = Environment.GetEnvironmentVariable(EnvironmentVariableConstants.AUTHENTICATIONVALIDATEAUDIENCE);
+
+            if (string.IsNullOrEmpty(audienceValidationEnvironmentVariable))
+            {
+                return true;
+            }
+
+            bool audienceValidationEnabled;
+            if (bool.TryParse(audienceValidationEnvironmentVariable, out audienceValidationEnabled))
+            {
+                if (!audienceValidationEnabled)
+                {
+                    Console.WriteLine($"Warning: Audience has been disabled by {EnvironmentVariableConstants.AUTHENTICATIONVALIDATEAUDIENCE} configuration.");
+                }
+
+                return audienceValidationEnabled;
+            }
+
+            throw new ArgumentException($"Invalid {EnvironmentVariableConstants.AUTHENTICATIONVALIDATEAUDIENCE} configuration.");
+        }
+
+        public static bool ShouldValidateIssuer()
+        {
+            var issuerValidationEnvironmentVariable = Environment.GetEnvironmentVariable(EnvironmentVariableConstants.AUTHENTICATIONVALIDATEISSUER);
+
+            if (string.IsNullOrEmpty(issuerValidationEnvironmentVariable))
+            {
+                return true;
+            }
+
+            bool issuerValidationEnabled;
+            if (bool.TryParse(issuerValidationEnvironmentVariable, out issuerValidationEnabled))
+            {
+                if (!issuerValidationEnabled)
+                {
+                    Console.WriteLine($"Warning: Issuer has been disabled by {EnvironmentVariableConstants.AUTHENTICATIONVALIDATEISSUER} configuration.");
+                }
+
+                return issuerValidationEnabled;
+            }
+
+            throw new ArgumentException($"Invalid {EnvironmentVariableConstants.AUTHENTICATIONVALIDATEISSUER} configuration.");
+        }
+
+        public static bool ShouldValidateExpiry()
+        {
+            var expiryValidationEnvironmentVariable = Environment.GetEnvironmentVariable(EnvironmentVariableConstants.AUTHENTICATIONVALIDATEEXPIRY);
+
+            if (string.IsNullOrEmpty(expiryValidationEnvironmentVariable))
+            {
+                return true;
+            }
+
+            bool expiryValidationEnabled;
+            if (bool.TryParse(expiryValidationEnvironmentVariable, out expiryValidationEnabled))
+            {
+                if (!expiryValidationEnabled)
+                {
+                    Console.WriteLine($"Warning: Expiry has been disabled by {EnvironmentVariableConstants.AUTHENTICATIONVALIDATEEXPIRY} configuration.");
+                }
+
+                return expiryValidationEnabled;
+            }
+
+            throw new ArgumentException($"Invalid {EnvironmentVariableConstants.AUTHENTICATIONVALIDATEEXPIRY} configuration.");
+        }
+
+        public static bool ShouldValidateIssuerSigningKey()
+        {
+            var issuerSigningKeyValidationEnvironmentVariable = Environment.GetEnvironmentVariable(EnvironmentVariableConstants.AUTHENTICATIONVALIDATEISSUERSIGNINGKEY);
+
+            if (string.IsNullOrEmpty(issuerSigningKeyValidationEnvironmentVariable))
+            {
+                return true;
+            }
+
+            bool issuerSigningKeyValidationEnabled;
+            if (bool.TryParse(issuerSigningKeyValidationEnvironmentVariable, out issuerSigningKeyValidationEnabled))
+            {
+                if (!issuerSigningKeyValidationEnabled)
+                {
+                    Console.WriteLine($"Warning: Issuer signing key has been disabled by {EnvironmentVariableConstants.AUTHENTICATIONVALIDATEISSUERSIGNINGKEY} configuration.");
+                }
+
+                return issuerSigningKeyValidationEnabled;
+            }
+
+            throw new ArgumentException($"Invalid {EnvironmentVariableConstants.AUTHENTICATIONVALIDATEISSUERSIGNINGKEY} configuration.");
+        }
+
+        public static bool ShouldValidateSignedTokens()
+        {
+            var signedTokensValidationEnvironmentVariable = Environment.GetEnvironmentVariable(EnvironmentVariableConstants.AUTHENTICATIONVALIDATESIGNEDTOKENS);
+
+            if (string.IsNullOrEmpty(signedTokensValidationEnvironmentVariable))
+            {
+                return true;
+            }
+
+            bool signedTokensValidationEnabled;
+            if (bool.TryParse(signedTokensValidationEnvironmentVariable, out signedTokensValidationEnabled))
+            {
+                if (!signedTokensValidationEnabled)
+                {
+                    Console.WriteLine($"Warning: Signed tokens has been disabled by {EnvironmentVariableConstants.AUTHENTICATIONVALIDATESIGNEDTOKENS} configuration.");
+                }
+
+                return signedTokensValidationEnabled;
+            }
+
+            throw new ArgumentException($"Invalid {EnvironmentVariableConstants.AUTHENTICATIONVALIDATESIGNEDTOKENS} configuration.");
+        }
     }
 }

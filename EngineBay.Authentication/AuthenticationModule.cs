@@ -45,25 +45,25 @@ namespace EngineBay.Authentication
                 options.TokenValidationParameters = new TokenValidationParameters()
                 {
                     // The signing key must match!
-                    ValidateIssuerSigningKey = true,
-                    TryAllIssuerSigningKeys = true,
+                    ValidateIssuerSigningKey = AuthenticationConfiguration.ShouldValidateIssuerSigningKey(),
+                    TryAllIssuerSigningKeys = AuthenticationConfiguration.ShouldValidateIssuerSigningKey(),
                     IssuerSigningKey = signingKey,
                     IssuerSigningKeys = new List<SecurityKey>() { signingKey },
-                    RequireSignedTokens = true,
+                    RequireSignedTokens = AuthenticationConfiguration.ShouldValidateSignedTokens(),
                     ValidAlgorithms = AuthenticationConfiguration.GetAlgorithms(),
 
                     // Validate the JWT Issuer (iss) claim
-                    ValidateIssuer = true,
+                    ValidateIssuer = AuthenticationConfiguration.ShouldValidateIssuer(),
                     ValidIssuers = AuthenticationConfiguration.GetIssuers(),
 
                     // Validate the JWT Audience (aud) claim
-                    RequireAudience = true,
-                    ValidateAudience = true,
+                    RequireAudience = AuthenticationConfiguration.ShouldValidateAudience(),
+                    ValidateAudience = AuthenticationConfiguration.ShouldValidateAudience(),
                     ValidAudiences = AuthenticationConfiguration.GetAudiences(),
 
                     // Validate the token expiry
-                    ValidateLifetime = true,
-                    RequireExpirationTime = true,
+                    ValidateLifetime = AuthenticationConfiguration.ShouldValidateExpiry(),
+                    RequireExpirationTime = AuthenticationConfiguration.ShouldValidateExpiry(),
 
                     // If you want to allow a certain amount of clock drift, set that here:
                     ClockSkew = TimeSpan.Zero,
