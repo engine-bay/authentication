@@ -1,8 +1,10 @@
 namespace EngineBay.Authentication
 {
     using System.Security.Claims;
+    using System.Text;
     using EngineBay.Core;
     using EngineBay.Persistence;
+    using Microsoft.IdentityModel.Tokens;
 
     public class AuthenticationModule : IModule
     {
@@ -17,7 +19,32 @@ namespace EngineBay.Authentication
             services.AddTransient<GetCurrentUser>();
 
             // register authentication services
-            services.AddAuthentication().AddJwtBearer();
+            services.AddAuthentication().AddJwtBearer("Bearer", options =>
+            {
+                var secretKey = AuthenticationConfiguration.GetSigningKey();
+                var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
+
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    // The signing key must match!
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = signingKey,
+
+                    // Validate the JWT Issuer (iss) claim
+                    ValidateIssuer = true,
+                    ValidIssuers = AuthenticationConfiguration.GetIssuers(),
+
+                    // Validate the JWT Audience (aud) claim
+                    ValidateAudience = true,
+                    ValidAudiences = AuthenticationConfiguration.GetAudiences(),
+
+                    // Validate the token expiry
+                    ValidateLifetime = true,
+
+                    // If you want to allow a certain amount of clock drift, set that here:
+                    ClockSkew = TimeSpan.Zero,
+                };
+            });
             services.AddAuthorization();
 
             // register persistence services

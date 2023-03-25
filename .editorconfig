@@ -12,6 +12,10 @@ dotnet_diagnostic.SA1601.severity = silent
 dotnet_diagnostic.SA1602.severity = silent 
 dotnet_diagnostic.SA1648.severity = silent
 
+# CA1303: No internationlization requirement, can have string literals
+# https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca1303
+dotnet_diagnostic.CA1303.severity = silent
+
 # CA2227: Causes regressions when seeding data (unable to parse lists from JSON)
 # https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/quality-rules/ca2227
 dotnet_diagnostic.CA2227.severity = silent
