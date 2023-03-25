@@ -48,8 +48,9 @@ namespace EngineBay.Authentication
                         throw new ArgumentException("Unsupported Signing Algorithm");
                 }
 
-                var signingKey = new SymmetricSecurityKey(key){
-                    KeyId = algorithm.ToString()
+                var signingKey = new SymmetricSecurityKey(key)
+                {
+                    KeyId = algorithm.ToString(),
                 };
 
                 var tokenValidationParameters = new TokenValidationParameters()
