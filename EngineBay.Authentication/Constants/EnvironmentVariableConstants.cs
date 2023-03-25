@@ -4,6 +4,8 @@ namespace EngineBay.Authentication
     {
         public const string AUTHENTICATIONSECRET = "AUTHENTICATION_SECRET";
 
+        public const string AUTHENTICATIONAUTHORITY = "AUTHENTICATION_AUTHORITY";
+
         public const string AUTHENTICATIONAUDIENCE = "AUTHENTICATION_AUDIENCE";
 
         public const string AUTHENTICATIONISSUER = "AUTHENTICATION_ISSUER";

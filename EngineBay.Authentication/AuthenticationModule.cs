@@ -75,16 +75,22 @@ namespace EngineBay.Authentication
                 if (AuthenticationConfiguration.ShouldValidateIssuer())
                 {
                     // Validate the JWT Issuer (iss) claim
+                    var issuer = AuthenticationConfiguration.GetIssuer();
                     tokenValidationParameters.ValidateIssuer = true;
                     tokenValidationParameters.ValidIssuers = AuthenticationConfiguration.GetIssuers();
+                    tokenValidationParameters.ValidIssuer = issuer;
+                    options.ClaimsIssuer = issuer;
                 }
 
                 if (AuthenticationConfiguration.ShouldValidateAudience())
                 {
                     // Validate the JWT Audience (aud) claim
+                    var audience = AuthenticationConfiguration.GetAudience();
                     tokenValidationParameters.RequireAudience = true;
                     tokenValidationParameters.ValidateAudience = true;
                     tokenValidationParameters.ValidAudiences = AuthenticationConfiguration.GetAudiences();
+                    tokenValidationParameters.ValidAudience = audience;
+                    options.Audience = audience;
                 }
 
                 if (AuthenticationConfiguration.ShouldValidateExpiry())
@@ -94,6 +100,7 @@ namespace EngineBay.Authentication
                     tokenValidationParameters.RequireExpirationTime = true;
                 }
 
+                options.Authority = AuthenticationConfiguration.GetAuthority();
                 options.TokenValidationParameters = tokenValidationParameters;
                 options.RequireHttpsMetadata = false;
             });

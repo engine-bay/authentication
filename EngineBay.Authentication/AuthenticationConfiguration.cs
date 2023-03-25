@@ -21,6 +21,18 @@ namespace EngineBay.Authentication
             return audiences;
         }
 
+        public static string GetAudience()
+        {
+            var audienceEnvironmentVariable = Environment.GetEnvironmentVariable(EnvironmentVariableConstants.AUTHENTICATIONAUDIENCE);
+            if (string.IsNullOrEmpty(audienceEnvironmentVariable))
+            {
+                Console.WriteLine($"Warning: {EnvironmentVariableConstants.AUTHENTICATIONAUDIENCE} not configured, using default '{DefaultAuthenticationConfigurationConstants.DefaultAudience}'.");
+                return DefaultAuthenticationConfigurationConstants.DefaultAudience;
+            }
+
+            return audienceEnvironmentVariable;
+        }
+
         public static SigningAlgorithmsTypes GetAlgorithm()
         {
             var algorithmEnvironmentVariable = Environment.GetEnvironmentVariable(EnvironmentVariableConstants.AUTHENTICATIONALGORITHM);
@@ -75,6 +87,30 @@ namespace EngineBay.Authentication
             }
 
             return issuers;
+        }
+
+        public static string GetIssuer()
+        {
+            var issuerEnvironmentVariable = Environment.GetEnvironmentVariable(EnvironmentVariableConstants.AUTHENTICATIONISSUER);
+            if (string.IsNullOrEmpty(issuerEnvironmentVariable))
+            {
+                Console.WriteLine($"Warning: {EnvironmentVariableConstants.AUTHENTICATIONISSUER} not configured, using default '{DefaultAuthenticationConfigurationConstants.DefaultIssuer}'.");
+                return DefaultAuthenticationConfigurationConstants.DefaultIssuer;
+            }
+
+            return issuerEnvironmentVariable;
+        }
+
+        public static string GetAuthority()
+        {
+            var authorityEnvironmentVariable = Environment.GetEnvironmentVariable(EnvironmentVariableConstants.AUTHENTICATIONAUTHORITY);
+            if (string.IsNullOrEmpty(authorityEnvironmentVariable))
+            {
+                Console.WriteLine($"Warning: {EnvironmentVariableConstants.AUTHENTICATIONAUTHORITY} not configured, using default '{DefaultAuthenticationConfigurationConstants.DefaultAuthority}'.");
+                return DefaultAuthenticationConfigurationConstants.DefaultAuthority;
+            }
+
+            return authorityEnvironmentVariable;
         }
 
         public static string GetSigningKey()
