@@ -1,6 +1,7 @@
 namespace EngineBay.Authentication
 {
     using System.Security.Claims;
+    using System.Security.Cryptography;
     using System.Text;
     using EngineBay.Core;
     using EngineBay.Persistence;
@@ -21,25 +22,46 @@ namespace EngineBay.Authentication
             // register authentication services
             services.AddAuthentication().AddJwtBearer("Bearer", options =>
             {
+                var algorithm = AuthenticationConfiguration.GetAlgorithm();
                 var secretKey = AuthenticationConfiguration.GetSigningKey();
-                var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
+                byte[] key;
+
+                switch (algorithm)
+                {
+                    case SigningAlgorithmsTypes.HS256:
+                        var hmac256 = new HMACSHA256(Encoding.UTF8.GetBytes(secretKey));
+                        key = hmac256.Key;
+                        break;
+                    case SigningAlgorithmsTypes.HS512:
+                        var hmac512 = new HMACSHA512(Encoding.UTF8.GetBytes(secretKey));
+                        key = hmac512.Key;
+                        break;
+                    default:
+                        throw new ArgumentException("Unsupported Signing Algorithm");
+                }
+
+                var signingKey = new SymmetricSecurityKey(key);
 
                 options.TokenValidationParameters = new TokenValidationParameters()
                 {
                     // The signing key must match!
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = signingKey,
+                    RequireSignedTokens = true,
+                    ValidAlgorithms = AuthenticationConfiguration.GetAlgorithms(),
 
                     // Validate the JWT Issuer (iss) claim
                     ValidateIssuer = true,
                     ValidIssuers = AuthenticationConfiguration.GetIssuers(),
 
                     // Validate the JWT Audience (aud) claim
+                    RequireAudience = true,
                     ValidateAudience = true,
                     ValidAudiences = AuthenticationConfiguration.GetAudiences(),
 
                     // Validate the token expiry
                     ValidateLifetime = true,
+                    RequireExpirationTime = true,
 
                     // If you want to allow a certain amount of clock drift, set that here:
                     ClockSkew = TimeSpan.Zero,

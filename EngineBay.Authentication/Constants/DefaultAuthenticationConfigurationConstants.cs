@@ -5,5 +5,7 @@ namespace EngineBay.Authentication
         public const string DefaultAudience = "http://localhost";
 
         public const string DefaultIssuer = "http://localhost";
+
+        public const SigningAlgorithmsTypes DefaultAlgorithm = SigningAlgorithmsTypes.HS256;
     }
 }
