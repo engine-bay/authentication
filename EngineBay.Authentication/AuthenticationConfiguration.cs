@@ -101,14 +101,9 @@ namespace EngineBay.Authentication
             return issuerEnvironmentVariable;
         }
 
-        public static string GetAuthority()
+        public static string? GetAuthority()
         {
             var authorityEnvironmentVariable = Environment.GetEnvironmentVariable(EnvironmentVariableConstants.AUTHENTICATIONAUTHORITY);
-            if (string.IsNullOrEmpty(authorityEnvironmentVariable))
-            {
-                Console.WriteLine($"Warning: {EnvironmentVariableConstants.AUTHENTICATIONAUTHORITY} not configured, using default '{DefaultAuthenticationConfigurationConstants.DefaultAuthority}'.");
-                return DefaultAuthenticationConfigurationConstants.DefaultAuthority;
-            }
 
             return authorityEnvironmentVariable;
         }
