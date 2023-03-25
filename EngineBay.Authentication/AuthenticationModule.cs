@@ -132,7 +132,7 @@ namespace EngineBay.Authentication
                     tokenValidationParameters.ValidateLifetime = false;
                     tokenValidationParameters.RequireExpirationTime = false;
                 }
-            
+
                 options.IncludeErrorDetails = false;
                 options.Authority = AuthenticationConfiguration.GetAuthority();
                 options.TokenValidationParameters = tokenValidationParameters;
