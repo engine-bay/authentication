@@ -34,6 +34,8 @@ namespace EngineBay.Authentication
 
             this.authenticationWriteDbContext.ApplicationUsers.Add(newApplicationUser);
 
+            await this.authenticationWriteDbContext.SaveChangesAsync(systemUser, cancellation).ConfigureAwait(false);
+
             var hashedPassword = BCrypt.EnhancedHashPassword(createBasicAuthUserDto.Password);
 
             var basicAuthCredentials = new BasicAuthCredential()
