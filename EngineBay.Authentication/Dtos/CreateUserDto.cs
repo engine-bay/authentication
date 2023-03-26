@@ -2,6 +2,6 @@ namespace EngineBay.Authentication
 {
     public class CreateUserDto
     {
-        public string? Name { get; set; }
+        public string? Username { get; set; }
     }
 }

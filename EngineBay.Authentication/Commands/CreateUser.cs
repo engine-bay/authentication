@@ -3,6 +3,7 @@ namespace EngineBay.Authentication
     using System.Security.Claims;
     using EngineBay.Core;
     using EngineBay.Persistence;
+    using Microsoft.EntityFrameworkCore;
 
     public class CreateUser : ICommandHandler<CreateUserDto, ApplicationUserDto>
     {
@@ -27,12 +28,17 @@ namespace EngineBay.Authentication
 
             var newApplicationUser = new ApplicationUser()
             {
-                Name = createUserDto.Name,
+                Username = createUserDto.Username,
             };
 
             this.authenticationWriteDbContext.ApplicationUsers.Add(newApplicationUser);
 
-            var systemUser = new SystemUser();
+            var systemUser = await this.authenticationWriteDbContext.ApplicationUsers.SingleOrDefaultAsync(applicationUser => applicationUser.Username == DefaultAuthenticationConfigurationConstants.SystemUserName, cancellation).ConfigureAwait(false);
+
+            if (systemUser is null)
+            {
+                throw new ArgumentException(nameof(systemUser));
+            }
 
             await this.authenticationWriteDbContext.SaveChangesAsync(systemUser, cancellation).ConfigureAwait(false);
 

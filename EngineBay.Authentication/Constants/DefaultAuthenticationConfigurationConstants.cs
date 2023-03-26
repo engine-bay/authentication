@@ -6,6 +6,8 @@ namespace EngineBay.Authentication
 
         public const string DefaultIssuer = "http://localhost";
 
+        public const string SystemUserName = "System";
+
         public const SigningAlgorithmsTypes DefaultAlgorithm = SigningAlgorithmsTypes.HS256;
 
         public const AuthenticationTypes DefaultAuthentication = AuthenticationTypes.JwtBearer;

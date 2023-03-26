@@ -40,6 +40,8 @@ namespace EngineBay.Persistence
 
             modelBuilder.Entity<BasicAuthCredential>().Property(x => x.ApplicationUserId).IsRequired();
 
+            modelBuilder.Entity<BasicAuthCredential>().HasIndex(x => x.ApplicationUserId).IsUnique();
+
             modelBuilder.Entity<BasicAuthCredential>().HasOne(x => x.ApplicationUser).WithMany().HasForeignKey(x => x.ApplicationUserId);
         }
     }

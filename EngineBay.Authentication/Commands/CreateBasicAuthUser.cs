@@ -4,6 +4,7 @@ namespace EngineBay.Authentication
     using BCrypt.Net;
     using EngineBay.Core;
     using EngineBay.Persistence;
+    using Microsoft.EntityFrameworkCore;
 
     public class CreateBasicAuthUser : ICommandHandler<CreateBasicAuthUserDto, ApplicationUserDto>
     {
@@ -28,7 +29,7 @@ namespace EngineBay.Authentication
 
             var newApplicationUser = new ApplicationUser()
             {
-                Name = createBasicAuthUserDto.Name,
+                Username = createBasicAuthUserDto.Username,
             };
 
             this.authenticationWriteDbContext.ApplicationUsers.Add(newApplicationUser);
@@ -43,7 +44,12 @@ namespace EngineBay.Authentication
 
             this.authenticationWriteDbContext.BasicAuthCredentials.Add(basicAuthCredentials);
 
-            var systemUser = new SystemUser();
+            var systemUser = await this.authenticationWriteDbContext.ApplicationUsers.SingleOrDefaultAsync(applicationUser => applicationUser.Username == DefaultAuthenticationConfigurationConstants.SystemUserName, cancellation).ConfigureAwait(false);
+
+            if (systemUser is null)
+            {
+                throw new ArgumentException(nameof(systemUser));
+            }
 
             await this.authenticationWriteDbContext.SaveChangesAsync(systemUser, cancellation).ConfigureAwait(false);
 

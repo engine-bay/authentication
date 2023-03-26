@@ -13,11 +13,11 @@ namespace EngineBay.Authentication
             }
 
             this.Id = applicationUser.Id;
-            this.Name = applicationUser.Name;
+            this.Username = applicationUser.Username;
         }
 
         public Guid Id { get; set; }
 
-        public string? Name { get; set; }
+        public string? Username { get; set; }
     }
 }
