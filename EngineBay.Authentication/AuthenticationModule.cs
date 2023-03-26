@@ -11,6 +11,7 @@ namespace EngineBay.Authentication
         {
             // Register commands
             services.AddTransient<CreateUser>();
+            services.AddTransient<CreateBasicAuthUser>();
 
             // Register queries
             services.AddTransient<GetApplicationUser>();
