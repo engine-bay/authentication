@@ -54,14 +54,7 @@ namespace EngineBay.Authentication
                 return false;
             }
 
-            var hashedPassword = BCrypt.EnhancedHashPassword(password);
-
-            if (basicAuthCredentials.PasswordHash == hashedPassword)
-            {
-                return true;
-            }
-
-            return false;
+            return BCrypt.EnhancedVerify(password, basicAuthCredentials.PasswordHash);
         }
     }
 }
