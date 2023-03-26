@@ -86,6 +86,8 @@ namespace EngineBay.Authentication
 
         public WebApplication AddMiddleware(WebApplication app)
         {
+            app.UseAuthorization();
+
             return app;
         }
     }
