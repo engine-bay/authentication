@@ -2,6 +2,7 @@ namespace EngineBay.Authentication
 {
     public static class EnvironmentVariableConstants
     {
+        public const string AUTHENTICATIONMETHOD = "AUTHENTICATION_METHOD";
         public const string AUTHENTICATIONSECRET = "AUTHENTICATION_SECRET";
 
         public const string AUTHENTICATIONAUTHORITY = "AUTHENTICATION_AUTHORITY";

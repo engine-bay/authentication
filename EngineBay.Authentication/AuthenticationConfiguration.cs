@@ -60,6 +60,33 @@ namespace EngineBay.Authentication
             return algorithm;
         }
 
+        public static AuthenticationTypes GetAuthenticationMethod()
+        {
+            var authenticationMethodEnvironmentVariable = Environment.GetEnvironmentVariable(EnvironmentVariableConstants.AUTHENTICATIONMETHOD);
+
+            if (string.IsNullOrEmpty(authenticationMethodEnvironmentVariable))
+            {
+                Console.WriteLine($"Warning: {EnvironmentVariableConstants.AUTHENTICATIONMETHOD} not configured, using default '{DefaultAuthenticationConfigurationConstants.DefaultAuthentication}'.");
+                return DefaultAuthenticationConfigurationConstants.DefaultAuthentication;
+            }
+
+            var authenticationType = (AuthenticationTypes)Enum.Parse(typeof(AuthenticationTypes), authenticationMethodEnvironmentVariable);
+
+            if (!Enum.IsDefined(typeof(AuthenticationTypes), authenticationType) | authenticationType.ToString().Contains(',', StringComparison.InvariantCulture))
+            {
+                Console.WriteLine($"Warning: '{authenticationMethodEnvironmentVariable}' is not a valid {EnvironmentVariableConstants.AUTHENTICATIONMETHOD} configuration option. Valid options are: ");
+                foreach (string name in Enum.GetNames(typeof(AuthenticationTypes)))
+                {
+                    Console.Write(name);
+                    Console.Write(", ");
+                }
+
+                throw new ArgumentException($"Invalid {EnvironmentVariableConstants.AUTHENTICATIONMETHOD} configuration.");
+            }
+
+            return authenticationType;
+        }
+
         public static Collection<string> GetAlgorithms()
         {
             var algorithms = new Collection<string>();
