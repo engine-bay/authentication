@@ -44,19 +44,35 @@ namespace EngineBay.Authentication
         /// <inheritdoc/>
         public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
         {
-            endpoints.MapPost("/register/basic-auth", async (CreateBasicAuthUserDto createBasicAuthUserDto, CreateBasicAuthUser command, ClaimsPrincipal claimsPrincipal, CancellationToken cancellation) =>
-           {
-               var applicationUserDto = await command.Handle(createBasicAuthUserDto, claimsPrincipal, cancellation).ConfigureAwait(false);
+            var authenticationType = AuthenticationConfiguration.GetAuthenticationMethod();
 
-               return Results.Ok(applicationUserDto);
-           });
+            switch (authenticationType)
+            {
+                case AuthenticationTypes.JwtBearer:
+                    endpoints.MapPost("/register", async (CreateUserDto createUserDto, CreateUser command, ClaimsPrincipal claimsPrincipal, CancellationToken cancellation) =>
+                    {
+                        var applicationUserDto = await command.Handle(createUserDto, claimsPrincipal, cancellation).ConfigureAwait(false);
 
-            endpoints.MapPost("/register/jwt-bearer-auth", async (CreateUserDto createUserDto, CreateUser command, ClaimsPrincipal claimsPrincipal, CancellationToken cancellation) =>
-           {
-               var applicationUserDto = await command.Handle(createUserDto, claimsPrincipal, cancellation).ConfigureAwait(false);
+                        return Results.Ok(applicationUserDto);
+                    }).RequireAuthorization();
 
-               return Results.Ok(applicationUserDto);
-           }).RequireAuthorization();
+                    break;
+                case AuthenticationTypes.Basic:
+                    endpoints.MapPost("/register", async (CreateBasicAuthUserDto createBasicAuthUserDto, CreateBasicAuthUser command, ClaimsPrincipal claimsPrincipal, CancellationToken cancellation) =>
+                    {
+                        var applicationUserDto = await command.Handle(createBasicAuthUserDto, claimsPrincipal, cancellation).ConfigureAwait(false);
+
+                        return Results.Ok(applicationUserDto);
+                    }).AllowAnonymous();
+
+                    break;
+                case AuthenticationTypes.None:
+                    endpoints.MapPost("/register", (CancellationToken cancellation) =>
+                    {
+                        throw new NotImplementedException();
+                    }).AllowAnonymous();
+                    break;
+            }
 
             endpoints.MapGet("/userInfo", async (GetCurrentUser query, ClaimsPrincipal claimsPrincipal, CancellationToken cancellation) =>
             {
