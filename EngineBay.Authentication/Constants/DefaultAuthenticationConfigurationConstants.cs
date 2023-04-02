@@ -2,9 +2,9 @@ namespace EngineBay.Authentication
 {
     public static class DefaultAuthenticationConfigurationConstants
     {
-        public const string DefaultAudience = "http://localhost";
+        public const string DefaultAudience = "http://localhost:5050";
 
-        public const string DefaultIssuer = "http://localhost";
+        public const string DefaultIssuer = "http://localhost:5050";
 
         public const string SystemUserName = "System";
 
