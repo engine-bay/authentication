@@ -27,12 +27,19 @@ namespace EngineBay.Authentication
                 throw new ArgumentNullException(nameof(createBasicAuthUserDto));
             }
 
+            var systemUser = await this.authenticationWriteDbContext.ApplicationUsers.SingleOrDefaultAsync(applicationUser => applicationUser.Username == DefaultAuthenticationConfigurationConstants.SystemUserName, cancellation).ConfigureAwait(false);
+
             var newApplicationUser = new ApplicationUser()
             {
                 Username = createBasicAuthUserDto.Username,
             };
 
             this.authenticationWriteDbContext.ApplicationUsers.Add(newApplicationUser);
+
+            if (systemUser is null)
+            {
+                throw new ArgumentException(nameof(systemUser));
+            }
 
             await this.authenticationWriteDbContext.SaveChangesAsync(systemUser, cancellation).ConfigureAwait(false);
 
@@ -45,13 +52,6 @@ namespace EngineBay.Authentication
             };
 
             this.authenticationWriteDbContext.BasicAuthCredentials.Add(basicAuthCredentials);
-
-            var systemUser = await this.authenticationWriteDbContext.ApplicationUsers.SingleOrDefaultAsync(applicationUser => applicationUser.Username == DefaultAuthenticationConfigurationConstants.SystemUserName, cancellation).ConfigureAwait(false);
-
-            if (systemUser is null)
-            {
-                throw new ArgumentException(nameof(systemUser));
-            }
 
             await this.authenticationWriteDbContext.SaveChangesAsync(systemUser, cancellation).ConfigureAwait(false);
 
