@@ -8,13 +8,11 @@ namespace EngineBay.Authentication
     public class CreateUser : ICommandHandler<CreateUserDto, ApplicationUserDto>
     {
         private readonly AuthenticationWriteDbContext authenticationWriteDbContext;
-        private readonly GetCurrentUser getCurrentUserQuery;
 
         private readonly GetApplicationUser getApplicationUserQuery;
 
-        public CreateUser(GetApplicationUser getApplicationUserQuery, GetCurrentUser getCurrentUserQuery, AuthenticationWriteDbContext authenticationWriteDbContext)
+        public CreateUser(GetApplicationUser getApplicationUserQuery, AuthenticationWriteDbContext authenticationWriteDbContext)
         {
-            this.getCurrentUserQuery = getCurrentUserQuery;
             this.getApplicationUserQuery = getApplicationUserQuery;
             this.authenticationWriteDbContext = authenticationWriteDbContext;
         }
@@ -42,7 +40,7 @@ namespace EngineBay.Authentication
 
             await this.authenticationWriteDbContext.SaveChangesAsync(systemUser, cancellation).ConfigureAwait(false);
 
-            return await this.getCurrentUserQuery.Handle(claimsPrincipal, cancellation).ConfigureAwait(false);
+            return new ApplicationUserDto(newApplicationUser);
         }
     }
 }
