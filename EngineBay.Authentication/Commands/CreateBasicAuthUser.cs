@@ -8,14 +8,14 @@ namespace EngineBay.Authentication
 
     public class CreateBasicAuthUser : ICommandHandler<CreateBasicAuthUserDto, ApplicationUserDto>
     {
+        private readonly ILogger<CreateBasicAuthUser> logger;
         private readonly AuthenticationWriteDbContext authenticationWriteDbContext;
-        private readonly GetCurrentUser getCurrentUserQuery;
 
         private readonly GetApplicationUser getApplicationUserQuery;
 
-        public CreateBasicAuthUser(GetApplicationUser getApplicationUserQuery, GetCurrentUser getCurrentUserQuery, AuthenticationWriteDbContext authenticationWriteDbContext)
+        public CreateBasicAuthUser(ILogger<CreateBasicAuthUser> logger, GetApplicationUser getApplicationUserQuery, AuthenticationWriteDbContext authenticationWriteDbContext)
         {
-            this.getCurrentUserQuery = getCurrentUserQuery;
+            this.logger = logger;
             this.getApplicationUserQuery = getApplicationUserQuery;
             this.authenticationWriteDbContext = authenticationWriteDbContext;
         }
@@ -55,7 +55,9 @@ namespace EngineBay.Authentication
 
             await this.authenticationWriteDbContext.SaveChangesAsync(systemUser, cancellation).ConfigureAwait(false);
 
-            return await this.getCurrentUserQuery.Handle(claimsPrincipal, cancellation).ConfigureAwait(false);
+            this.logger.RegisteredNewUser();
+
+            return new ApplicationUserDto(newApplicationUser);
         }
     }
 }
