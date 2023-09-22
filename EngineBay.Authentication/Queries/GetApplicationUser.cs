@@ -20,9 +20,16 @@ namespace EngineBay.Authentication
         /// <inheritdoc/>
         public async Task<ApplicationUser> Handle(ClaimsPrincipal user, CancellationToken cancellation)
         {
+            var shouldLogSensitiveData = LoggingConfiguration.IsSensativeDataLoggingEnabled();
+
             if (user is null)
             {
                 throw new ArgumentNullException(nameof(user));
+            }
+
+            if (shouldLogSensitiveData)
+            {
+                user.Dump();
             }
 
             if (user.Identity is null)
@@ -39,11 +46,9 @@ namespace EngineBay.Authentication
 
             if (applicationUser is null)
             {
-                var shouldLogSensitiveData = LoggingConfiguration.IsSensativeDataLoggingEnabled();
                 if (shouldLogSensitiveData)
                 {
                     this.logger.UserDoesNotExist(user.Identity.Name);
-                    user.Dump();
                 }
                 else
                 {
