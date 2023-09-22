@@ -2,6 +2,7 @@ namespace EngineBay.Authentication
 {
     using System.Security.Claims;
     using EngineBay.Core;
+    using EngineBay.Logging;
     using EngineBay.Persistence;
     using Microsoft.EntityFrameworkCore;
 
@@ -29,11 +30,26 @@ namespace EngineBay.Authentication
                 throw new ArgumentException(nameof(user.Identity));
             }
 
+            if (user.Identity.Name is null)
+            {
+                throw new ArgumentException(nameof(user.Identity.Name));
+            }
+
             var applicationUser = await this.authenticationQueryDbContext.ApplicationUsers.FirstOrDefaultAsync(x => x.Username == user.Identity.Name, cancellation).ConfigureAwait(false);
 
             if (applicationUser is null)
             {
-                this.logger.UserDoesNotExist();
+                var shouldLogSensitiveData = LoggingConfiguration.IsSensativeDataLoggingEnabled();
+                if (shouldLogSensitiveData)
+                {
+                    this.logger.UserDoesNotExist(user.Identity.Name);
+                    user.Dump();
+                }
+                else
+                {
+                    this.logger.UserDoesNotExist();
+                }
+
                 throw new ArgumentException(nameof(applicationUser));
             }
 

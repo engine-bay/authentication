@@ -17,9 +17,19 @@ namespace EngineBay.Authentication
             eventId: 3,
             formatString: "New user registered.");
 
+        private static readonly Action<ILogger, string, Exception?> NamedUserDoesNotExistValue = LoggerMessage.Define<string>(
+            logLevel: LogLevel.Warning,
+            eventId: 4,
+            formatString: "User with username '{Username}' does not exist.");
+
         public static void UserDoesNotExist(this ILogger logger)
         {
             UserDoesNotExistValue(logger, null);
+        }
+
+        public static void UserDoesNotExist(this ILogger logger, string username)
+        {
+            NamedUserDoesNotExistValue(logger, username, null);
         }
 
         public static void RegisteredNewUser(this ILogger logger)
