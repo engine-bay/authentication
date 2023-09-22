@@ -37,18 +37,30 @@ namespace EngineBay.Authentication
                 user.Identity.Dump();
             }
 
-            if (user.Identity.Name is null)
+            var claim = user.FindFirst(x => x.Type == "name");
+
+            var username = string.Empty;
+
+            if (user.Identity.Name is not null)
+            {
+                username = user.Identity.Name;
+            }
+            else if (claim is not null)
+            {
+                username = claim.Value;
+            }
+            else
             {
                 throw new ArgumentException(nameof(user.Identity.Name));
             }
 
-            var applicationUser = await this.authenticationQueryDbContext.ApplicationUsers.FirstOrDefaultAsync(x => x.Username == user.Identity.Name, cancellation).ConfigureAwait(false);
+            var applicationUser = await this.authenticationQueryDbContext.ApplicationUsers.FirstOrDefaultAsync(x => x.Username == username, cancellation).ConfigureAwait(false);
 
             if (applicationUser is null)
             {
                 if (shouldLogSensitiveData)
                 {
-                    this.logger.UserDoesNotExist(user.Identity.Name);
+                    this.logger.UserDoesNotExist(username);
                 }
                 else
                 {
