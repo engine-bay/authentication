@@ -27,14 +27,14 @@ namespace EngineBay.Authentication
                 throw new ArgumentNullException(nameof(user));
             }
 
-            if (shouldLogSensitiveData)
-            {
-                user.Dump();
-            }
-
             if (user.Identity is null)
             {
                 throw new ArgumentException(nameof(user.Identity));
+            }
+
+            if (shouldLogSensitiveData)
+            {
+                user.Identity.Dump();
             }
 
             if (user.Identity.Name is null)
