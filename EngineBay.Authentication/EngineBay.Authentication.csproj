@@ -31,7 +31,7 @@
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="EngineBay.Core" Version="4.0.0" />
     <PackageReference Include="EngineBay.Persistence" Version="3.2.0" />
-    <PackageReference Include="EngineBay.Logging" Version="0.2.3" />
+    <PackageReference Include="EngineBay.Logging" Version="1.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.4" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
