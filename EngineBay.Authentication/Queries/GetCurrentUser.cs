@@ -47,7 +47,7 @@ namespace EngineBay.Authentication
                 throw new ArgumentException(nameof(user.Identity.Name));
             }
 
-            var applicationUser = await this.authenticationQueryDbContext.ApplicationUsers.FirstOrDefaultAsync(x => x.Username == username, cancellation).ConfigureAwait(false);
+            var applicationUser = await this.authenticationQueryDbContext.ApplicationUsers.FirstOrDefaultAsync(x => x.Username == username, cancellation);
 
             if (applicationUser is null)
             {

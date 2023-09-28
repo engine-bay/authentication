@@ -33,14 +33,14 @@ namespace EngineBay.Authentication
 
             this.authenticationWriteDbContext.ApplicationUsers.Add(newApplicationUser);
 
-            var systemUser = await this.authenticationWriteDbContext.ApplicationUsers.SingleOrDefaultAsync(applicationUser => applicationUser.Username == DefaultAuthenticationConfigurationConstants.SystemUserName, cancellation).ConfigureAwait(false);
+            var systemUser = await this.authenticationWriteDbContext.ApplicationUsers.SingleOrDefaultAsync(applicationUser => applicationUser.Username == DefaultAuthenticationConfigurationConstants.SystemUserName, cancellation);
 
             if (systemUser is null)
             {
                 throw new ArgumentException(nameof(systemUser));
             }
 
-            await this.authenticationWriteDbContext.SaveChangesAsync(systemUser, cancellation).ConfigureAwait(false);
+            await this.authenticationWriteDbContext.SaveChangesAsync(systemUser, cancellation);
 
             this.logger.RegisteredNewUser();
 

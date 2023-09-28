@@ -38,7 +38,7 @@ namespace EngineBay.Authentication
                 throw new ArgumentException(nameof(claimsPrincipal.Identity));
             }
 
-            var applicationUser = await this.getApplicationUserQuery.Handle(claimsPrincipal, cancellation).ConfigureAwait(false);
+            var applicationUser = await this.getApplicationUserQuery.Handle(claimsPrincipal, cancellation);
 
             if (applicationUser is null)
             {
@@ -46,7 +46,7 @@ namespace EngineBay.Authentication
                 return false;
             }
 
-            var basicAuthCredentials = await this.authenticationQueryDbContext.BasicAuthCredentials.SingleOrDefaultAsync(x => x.ApplicationUserId == applicationUser.Id, cancellation).ConfigureAwait(false);
+            var basicAuthCredentials = await this.authenticationQueryDbContext.BasicAuthCredentials.SingleOrDefaultAsync(x => x.ApplicationUserId == applicationUser.Id, cancellation);
 
             if (basicAuthCredentials is null)
             {

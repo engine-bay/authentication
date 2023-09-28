@@ -53,7 +53,7 @@ namespace EngineBay.Authentication
                     Password = password,
                 };
 
-                var isAuthenticated = await this.verifyBasicAuthCredentials.Handle(basicAuthCredentialsDto, CancellationToken.None).ConfigureAwait(false);
+                var isAuthenticated = await this.verifyBasicAuthCredentials.Handle(basicAuthCredentialsDto, CancellationToken.None);
 
                 if (isAuthenticated)
                 {

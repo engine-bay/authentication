@@ -27,7 +27,7 @@ namespace EngineBay.Authentication
                 throw new ArgumentNullException(nameof(createBasicAuthUserDto));
             }
 
-            var systemUser = await this.authenticationWriteDbContext.ApplicationUsers.SingleOrDefaultAsync(applicationUser => applicationUser.Username == DefaultAuthenticationConfigurationConstants.SystemUserName, cancellation).ConfigureAwait(false);
+            var systemUser = await this.authenticationWriteDbContext.ApplicationUsers.SingleOrDefaultAsync(applicationUser => applicationUser.Username == DefaultAuthenticationConfigurationConstants.SystemUserName, cancellation);
 
             var newApplicationUser = new ApplicationUser()
             {
@@ -41,7 +41,7 @@ namespace EngineBay.Authentication
                 throw new ArgumentException(nameof(systemUser));
             }
 
-            await this.authenticationWriteDbContext.SaveChangesAsync(systemUser, cancellation).ConfigureAwait(false);
+            await this.authenticationWriteDbContext.SaveChangesAsync(systemUser, cancellation);
 
             var hashedPassword = BCrypt.EnhancedHashPassword(createBasicAuthUserDto.Password);
 
@@ -53,7 +53,7 @@ namespace EngineBay.Authentication
 
             this.authenticationWriteDbContext.BasicAuthCredentials.Add(basicAuthCredentials);
 
-            await this.authenticationWriteDbContext.SaveChangesAsync(systemUser, cancellation).ConfigureAwait(false);
+            await this.authenticationWriteDbContext.SaveChangesAsync(systemUser, cancellation);
 
             this.logger.RegisteredNewUser();
 

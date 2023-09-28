@@ -4,10 +4,9 @@ namespace EngineBay.Authentication
     using EngineBay.Core;
     using EngineBay.Persistence;
 
-    public class AuthenticationModule : IModule
+    public class AuthenticationModule : BaseModule
     {
-        /// <inheritdoc/>
-        public IServiceCollection RegisterModule(IServiceCollection services, IConfiguration configuration)
+        public override IServiceCollection RegisterModule(IServiceCollection services, IConfiguration configuration)
         {
             // Register commands
             services.AddTransient<CreateUser>();
@@ -41,8 +40,7 @@ namespace EngineBay.Authentication
             return services;
         }
 
-        /// <inheritdoc/>
-        public IEndpointRouteBuilder MapEndpoints(IEndpointRouteBuilder endpoints)
+        public override RouteGroupBuilder MapEndpoints(RouteGroupBuilder endpoints)
         {
             var authenticationType = AuthenticationConfiguration.GetAuthenticationMethod();
 
@@ -51,7 +49,7 @@ namespace EngineBay.Authentication
                 case AuthenticationTypes.JwtBearer:
                     endpoints.MapPost("/register", async (CreateUserDto createUserDto, CreateUser command, ClaimsPrincipal claimsPrincipal, CancellationToken cancellation) =>
                     {
-                        var applicationUserDto = await command.Handle(createUserDto, claimsPrincipal, cancellation).ConfigureAwait(false);
+                        var applicationUserDto = await command.Handle(createUserDto, claimsPrincipal, cancellation);
 
                         return Results.Ok(applicationUserDto);
                     }).RequireAuthorization();
@@ -60,7 +58,7 @@ namespace EngineBay.Authentication
                 case AuthenticationTypes.Basic:
                     endpoints.MapPost("/register", async (CreateBasicAuthUserDto createBasicAuthUserDto, CreateBasicAuthUser command, ClaimsPrincipal claimsPrincipal, CancellationToken cancellation) =>
                     {
-                        var applicationUserDto = await command.Handle(createBasicAuthUserDto, claimsPrincipal, cancellation).ConfigureAwait(false);
+                        var applicationUserDto = await command.Handle(createBasicAuthUserDto, claimsPrincipal, cancellation);
 
                         return Results.Ok(applicationUserDto);
                     }).AllowAnonymous();
@@ -76,7 +74,7 @@ namespace EngineBay.Authentication
 
             endpoints.MapGet("/userInfo", async (GetCurrentUser query, ClaimsPrincipal claimsPrincipal, CancellationToken cancellation) =>
             {
-                var applicationUserDto = await query.Handle(claimsPrincipal, cancellation).ConfigureAwait(false);
+                var applicationUserDto = await query.Handle(claimsPrincipal, cancellation);
 
                 return Results.Ok(applicationUserDto);
             }).RequireAuthorization();
@@ -84,7 +82,7 @@ namespace EngineBay.Authentication
             return endpoints;
         }
 
-        public WebApplication AddMiddleware(WebApplication app)
+        public override WebApplication AddMiddleware(WebApplication app)
         {
             app.UseAuthorization();
 
