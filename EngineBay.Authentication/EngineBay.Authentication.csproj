@@ -27,10 +27,17 @@
     <IsTrimmable>false</IsTrimmable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+  <ItemGroup Condition="$(Configuration)=='Debug'">
+    <ProjectReference Include="../../core/EngineBay.Core/EngineBay.Core.csproj" />
+    <ProjectReference Include="../../persistence/EngineBay.Persistence/EngineBay.Persistence.csproj" />
+  </ItemGroup>
+  <ItemGroup Condition="$(Configuration)!='Debug'">
     <PackageReference Include="EngineBay.Core" Version="6.1.0" />
     <PackageReference Include="EngineBay.Persistence" Version="4.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.4" />
     <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
