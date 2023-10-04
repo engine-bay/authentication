@@ -34,6 +34,8 @@ namespace EngineBay.Authentication
                     break;
             }
 
+            services.AddScoped<ICurrentIdentity, CurrentIdentity>();
+
             // register persistence services
             var databaseConfiguration = new CQRSDatabaseConfiguration<AuthenticationDbContext, AuthenticationQueryDbContext, AuthenticationWriteDbContext>();
             databaseConfiguration.RegisterDatabases(services);
