@@ -4,9 +4,9 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Primitives;
 
-    public class CurrentIdentity : ICurrentIdentity
+    public class CurrentIdentityFromJwt : ICurrentIdentity
     {
-        public CurrentIdentity(IHttpContextAccessor httpContextAccessor)
+        public CurrentIdentityFromJwt(IHttpContextAccessor httpContextAccessor)
         {
             if (httpContextAccessor == null)
             {
