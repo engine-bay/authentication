@@ -18,7 +18,7 @@
 
             var values = default(StringValues);
             httpContextAccessor.HttpContext?.Request.Headers.TryGetValue("User-ID", out values);
-            this.UserId = Guid.Parse(values.First() ?? string.Empty);
+            this.UserId = Guid.Parse(values.Single() ?? string.Empty);
         }
 
         public string? Username { get; }

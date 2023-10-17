@@ -52,9 +52,9 @@ namespace EngineBay.Authentication
             switch (authenticationType)
             {
                 case AuthenticationTypes.JwtBearer:
-                    endpoints.MapPost("/register", async (CreateUserDto createUserDto, CreateUser command, ClaimsPrincipal claimsPrincipal, CancellationToken cancellation) =>
+                    endpoints.MapPost("/register", async (CreateUserDto createUserDto, CreateUser command, CancellationToken cancellation) =>
                     {
-                        var applicationUserDto = await command.Handle(createUserDto, claimsPrincipal, cancellation).ConfigureAwait(false);
+                        var applicationUserDto = await command.Handle(createUserDto, cancellation).ConfigureAwait(false);
 
                         return Results.Ok(applicationUserDto);
                     }).RequireAuthorization();

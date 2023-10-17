@@ -6,7 +6,7 @@ namespace EngineBay.Authentication
     {
         public SystemUser()
         {
-            this.Id = default(Guid);
+            this.Id = Guid.Empty;
             this.Username = DefaultAuthenticationConfigurationConstants.SystemUserName;
         }
     }
