@@ -6,9 +6,9 @@ namespace EngineBay.Authentication
 
     public class AuthenticationWriteDbContext : AuthenticationQueryDbContext
     {
-        private readonly DatabaseAuditingInterceptor databaseAuditingInterceptor;
+        private readonly AuditingInterceptor databaseAuditingInterceptor;
 
-        public AuthenticationWriteDbContext(DbContextOptions<ModuleWriteDbContext> options, DatabaseAuditingInterceptor databaseAuditingInterceptor)
+        public AuthenticationWriteDbContext(DbContextOptions<ModuleWriteDbContext> options, AuditingInterceptor databaseAuditingInterceptor)
             : base(options)
         {
             this.databaseAuditingInterceptor = databaseAuditingInterceptor;
