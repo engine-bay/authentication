@@ -10,13 +10,18 @@ namespace EngineBay.Authentication
         private readonly ILogger<CreateBasicAuthUser> logger;
         private readonly AuthenticationWriteDbContext authenticationWriteDbContext;
 
-        public CreateBasicAuthUser(ILogger<CreateBasicAuthUser> logger, AuthenticationWriteDbContext authenticationWriteDbContext)
+        public CreateBasicAuthUser(
+            ILogger<CreateBasicAuthUser> logger,
+            AuthenticationWriteDbContext authenticationWriteDbContext)
         {
             this.logger = logger;
             this.authenticationWriteDbContext = authenticationWriteDbContext;
         }
 
-        public async Task<ApplicationUserDto> Handle(CreateBasicAuthUserDto createBasicAuthUserDto, ClaimsPrincipal user, CancellationToken cancellation)
+        public async Task<ApplicationUserDto> Handle(
+            CreateBasicAuthUserDto createBasicAuthUserDto,
+            ClaimsPrincipal user,
+            CancellationToken cancellation)
         {
             if (createBasicAuthUserDto is null)
             {

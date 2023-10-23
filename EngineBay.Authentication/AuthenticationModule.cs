@@ -31,7 +31,7 @@ namespace EngineBay.Authentication
                     BasicAuthenticationConfiguration.Configure(services);
                     services.AddScoped<ICurrentIdentity, CurrentIdentityFromBasicAuth>();
                     break;
-                case AuthenticationTypes.None:
+                default:
                     services.AddScoped<ICurrentIdentity, CurrentIdentityFromNoAuth>();
                     Console.WriteLine("Warning: no authentication has been configured. The system is insecure.");
                     break;
