@@ -35,7 +35,7 @@ namespace EngineBay.Authentication
 
             this.authenticationWriteDbContext.ApplicationUsers.Add(newApplicationUser);
 
-            await this.authenticationWriteDbContext.SaveChangesAsync(cancellation).ConfigureAwait(false);
+            await this.authenticationWriteDbContext.SaveChangesAsync(cancellation);
 
             var hashedPassword = BCrypt.EnhancedHashPassword(createBasicAuthUserDto.Password);
 
@@ -47,7 +47,7 @@ namespace EngineBay.Authentication
 
             this.authenticationWriteDbContext.BasicAuthCredentials.Add(basicAuthCredentials);
 
-            await this.authenticationWriteDbContext.SaveChangesAsync(cancellation).ConfigureAwait(false);
+            await this.authenticationWriteDbContext.SaveChangesAsync(cancellation);
 
             this.logger.RegisteredNewUser();
 

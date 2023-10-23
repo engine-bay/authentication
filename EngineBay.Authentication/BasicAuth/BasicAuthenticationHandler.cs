@@ -53,9 +53,9 @@ namespace EngineBay.Authentication
                     Password = password,
                 };
 
-                var isAuthenticted = await this.verifyBasicAuthCredentials.Handle(basicAuthCredentialsDto, CancellationToken.None).ConfigureAwait(false);
+                var isAuthenticated = await this.verifyBasicAuthCredentials.Handle(basicAuthCredentialsDto, CancellationToken.None);
 
-                if (isAuthenticted)
+                if (isAuthenticated)
                 {
                     return AuthenticateResult.Success(new AuthenticationTicket(claimsPrincipal, this.Scheme.Name));
                 }
