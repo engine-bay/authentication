@@ -14,14 +14,17 @@
             }
 
             // TODO: use the claims principal to get the current identity
-            this.Username = httpContextAccessor.HttpContext?.User?.Identity?.Name;
+            var name = httpContextAccessor.HttpContext?.User?.Identity?.Name;
+
+            ArgumentNullException.ThrowIfNull(name);
+            this.Username = name;
 
             var values = default(StringValues);
             httpContextAccessor.HttpContext?.Request.Headers.TryGetValue("User-ID", out values);
             this.UserId = Guid.Parse(values.Single() ?? string.Empty);
         }
 
-        public string? Username { get; }
+        public string Username { get; }
 
         public Guid UserId { get; }
     }

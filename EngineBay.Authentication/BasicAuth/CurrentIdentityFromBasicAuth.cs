@@ -13,9 +13,10 @@
             }
 
             // TODO: Get user from database?
+            this.Username = string.Empty;
         }
 
-        public string? Username { get; }
+        public string Username { get; }
 
         public Guid UserId { get; }
     }

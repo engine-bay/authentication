@@ -28,10 +28,7 @@ namespace EngineBay.Authentication
                 throw new ArgumentNullException(nameof(createBasicAuthUserDto));
             }
 
-            var newApplicationUser = new ApplicationUser()
-            {
-                Username = createBasicAuthUserDto.Username,
-            };
+            var newApplicationUser = new ApplicationUser(createBasicAuthUserDto.Username ?? string.Empty);
 
             this.authenticationWriteDbContext.ApplicationUsers.Add(newApplicationUser);
 
