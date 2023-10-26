@@ -1,6 +1,5 @@
 ﻿namespace EngineBay.Authentication
 {
-    using System.Security.Claims;
     using EngineBay.Core;
     using Microsoft.AspNetCore.Http;
 
@@ -18,17 +17,34 @@
                 throw new ArgumentNullException(nameof(getCurrentUser));
             }
 
-            var name = httpContextAccessor.HttpContext?.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name) ?? throw new ArgumentException("Cannot find claims");
-            this.Username = name.Value;
+            // var context = httpContextAccessor.HttpContext;
 
-            var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new[] { name }, "Basic"));
-            var user = getCurrentUser.Handle(claimsPrincipal, CancellationToken.None);
+            // if (context == null)
+            // {
+            var user = new SystemUser();
+            this.UserId = user.Id;
+            this.Username = user.Username;
 
-            this.UserId = user.Result.Id;
+            // }
+            // else
+            // {
+            //    var authHeader = context.Request.Headers["Authorization"].ToString() ?? throw new ArgumentException("Can't find auth header");
+            //    var token = authHeader.Substring("Basic ".Length).Trim();
+            //    var credentialstring = Encoding.UTF8.GetString(Convert.FromBase64String(token));
+            //    var credentials = credentialstring.Split(':');
+
+            // var username = credentials[0];
+            //    this.Username = username;
+
+            // var claimsPrincipal = new ClaimsPrincipal(new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, username) }, "Basic"));
+            //    var user = getCurrentUser.Handle(claimsPrincipal, CancellationToken.None);
+
+            // this.UserId = user.Result.Id;
+            // }
         }
 
-        public string Username { get; }
-
         public Guid UserId { get; }
+
+        public string Username { get; }
     }
 }
