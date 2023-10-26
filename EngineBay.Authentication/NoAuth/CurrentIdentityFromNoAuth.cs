@@ -12,8 +12,8 @@
                 throw new ArgumentNullException(nameof(httpContextAccessor));
             }
 
-            // TODO: Return nothing?
-            this.Username = string.Empty;
+            this.UserId = Guid.Empty;
+            this.Username = "NoAuthUser";
         }
 
         public string Username { get; }

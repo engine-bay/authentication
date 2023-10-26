@@ -2,7 +2,6 @@
 {
     using EngineBay.Core;
     using Microsoft.AspNetCore.Http;
-    using Microsoft.Extensions.Primitives;
 
     public class CurrentIdentityFromJwt : ICurrentIdentity
     {
@@ -13,19 +12,10 @@
                 throw new ArgumentNullException(nameof(httpContextAccessor));
             }
 
-            // TODO: use the claims principal to get the current identity
-            var name = httpContextAccessor.HttpContext?.User?.Identity?.Name;
+            this.Username = httpContextAccessor.HttpContext?.User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name)?.Value ?? throw new ArgumentException("Could not find user name from JWT claim");
 
-            if (name is null)
-            {
-                throw new ArgumentException("Application users not found at ");
-            }
-
-            this.Username = name;
-
-            var values = default(StringValues);
-            httpContextAccessor.HttpContext?.Request.Headers.TryGetValue("User-ID", out values);
-            this.UserId = Guid.Parse(values.Single() ?? string.Empty);
+            var idString = httpContextAccessor.HttpContext?.User?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Id)?.Value ?? throw new ArgumentException("Could not find user ID from JWT claim");
+            this.UserId = Guid.Parse(idString);
         }
 
         public string Username { get; }
