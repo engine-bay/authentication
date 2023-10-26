@@ -14,13 +14,7 @@
             }
 
             // TODO: use the claims principal to get the current identity
-            var name = httpContextAccessor.HttpContext?.User?.Identity?.Name;
-
-            if (name is null)
-            {
-                throw new ArgumentException("Application users not found at ");
-            }
-
+            var name = httpContextAccessor.HttpContext?.User?.Identity?.Name ?? throw new ArgumentException("Could not find user name from HTTP context");
             this.Username = name;
 
             var values = default(StringValues);
