@@ -23,12 +23,15 @@ namespace EngineBay.Authentication
             {
                 case AuthenticationTypes.JwtBearer:
                     JwtBearerAuthenticationConfiguration.Configure(services);
+                    services.AddScoped<ICurrentIdentity, CurrentIdentityFromJwt>();
                     break;
                 case AuthenticationTypes.Basic:
                     Console.WriteLine("Warning: no Basic authentication has been configured. The system is insecure.");
                     BasicAuthenticationConfiguration.Configure(services);
+                    services.AddScoped<ICurrentIdentity, CurrentIdentityFromBasicAuth>();
                     break;
-                case AuthenticationTypes.None:
+                default:
+                    services.AddScoped<ICurrentIdentity, CurrentIdentityFromNoAuth>();
                     Console.WriteLine("Warning: no authentication has been configured. The system is insecure.");
                     break;
             }
@@ -47,9 +50,9 @@ namespace EngineBay.Authentication
             switch (authenticationType)
             {
                 case AuthenticationTypes.JwtBearer:
-                    endpoints.MapPost("/register", async (CreateUserDto createUserDto, CreateUser command, ClaimsPrincipal claimsPrincipal, CancellationToken cancellation) =>
+                    endpoints.MapPost("/register", async (CreateUserDto createUserDto, CreateUser command, CancellationToken cancellation) =>
                     {
-                        var applicationUserDto = await command.Handle(createUserDto, claimsPrincipal, cancellation);
+                        var applicationUserDto = await command.Handle(createUserDto, cancellation);
 
                         return Results.Ok(applicationUserDto);
                     }).RequireAuthorization();

@@ -1,35 +1,28 @@
 namespace EngineBay.Authentication
 {
-    using System.Security.Claims;
     using EngineBay.Core;
     using EngineBay.Persistence;
     using Microsoft.EntityFrameworkCore;
 
-    public class CreateUser : ICommandHandler<CreateUserDto, ApplicationUserDto>
+    public class CreateUser : IClaimlessCommandHandler<CreateUserDto, ApplicationUserDto>
     {
         private readonly ILogger<CreateBasicAuthUser> logger;
         private readonly AuthenticationWriteDbContext authenticationWriteDbContext;
 
-        private readonly GetApplicationUser getApplicationUserQuery;
-
-        public CreateUser(ILogger<CreateBasicAuthUser> logger, GetApplicationUser getApplicationUserQuery, AuthenticationWriteDbContext authenticationWriteDbContext)
+        public CreateUser(ILogger<CreateBasicAuthUser> logger, AuthenticationWriteDbContext authenticationWriteDbContext)
         {
             this.logger = logger;
-            this.getApplicationUserQuery = getApplicationUserQuery;
             this.authenticationWriteDbContext = authenticationWriteDbContext;
         }
 
-        public async Task<ApplicationUserDto> Handle(CreateUserDto createUserDto, ClaimsPrincipal claimsPrincipal, CancellationToken cancellation)
+        public async Task<ApplicationUserDto> Handle(CreateUserDto createUserDto, CancellationToken cancellation)
         {
             if (createUserDto is null)
             {
                 throw new ArgumentNullException(nameof(createUserDto));
             }
 
-            var newApplicationUser = new ApplicationUser()
-            {
-                Username = createUserDto.Username,
-            };
+            var newApplicationUser = new ApplicationUser(createUserDto.Username);
 
             this.authenticationWriteDbContext.ApplicationUsers.Add(newApplicationUser);
 
@@ -40,7 +33,7 @@ namespace EngineBay.Authentication
                 throw new ArgumentException(nameof(systemUser));
             }
 
-            await this.authenticationWriteDbContext.SaveChangesAsync(systemUser, cancellation);
+            await this.authenticationWriteDbContext.SaveChangesAsync(cancellation);
 
             this.logger.RegisteredNewUser();
 

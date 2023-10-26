@@ -5,9 +5,9 @@ namespace EngineBay.Authentication
     public class SystemUser : ApplicationUser
     {
         public SystemUser()
+            : base(DefaultAuthenticationConfigurationConstants.SystemUserName)
         {
-            this.Id = default(Guid);
-            this.Username = DefaultAuthenticationConfigurationConstants.SystemUserName;
+            this.Id = Guid.Empty;
         }
     }
 }

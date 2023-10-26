@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net7.0</TargetFramework>
@@ -31,14 +31,16 @@
         <When Condition="'$(ASPNETCORE_ENVIRONMENT)' == 'Development'">
             <ItemGroup>
                 <ProjectReference Include="../../core/EngineBay.Core/EngineBay.Core.csproj" />
+                <ProjectReference Include="../../auditing/EngineBay.Auditing/EngineBay.Auditing.csproj" />
                 <ProjectReference
                     Include="../../persistence/EngineBay.Persistence/EngineBay.Persistence.csproj" />
             </ItemGroup>
         </When>
         <Otherwise>
             <ItemGroup>
-                <PackageReference Include="EngineBay.Core" Version="6.1.0" />
-                <PackageReference Include="EngineBay.Persistence" Version="4.0.0" />
+                <PackageReference Include="EngineBay.Core" Version="6.2.5" />
+                <PackageReference Include="EngineBay.Auditing" Version="0.0.2" />
+                <PackageReference Include="EngineBay.Persistence" Version="4.2.0" />
             </ItemGroup>
         </Otherwise>
     </Choose>
