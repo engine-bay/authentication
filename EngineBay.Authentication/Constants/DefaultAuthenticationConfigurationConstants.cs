@@ -8,6 +8,8 @@ namespace EngineBay.Authentication
 
         public const string SystemUserName = "System";
 
+        public const string UnauthenticatedUserName = "Unauthenticated User";
+
         public const SigningAlgorithmsTypes DefaultAlgorithm = SigningAlgorithmsTypes.HS256;
 
         public const AuthenticationTypes DefaultAuthentication = AuthenticationTypes.JwtBearer;

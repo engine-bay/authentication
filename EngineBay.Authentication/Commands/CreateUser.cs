@@ -4,7 +4,7 @@ namespace EngineBay.Authentication
     using EngineBay.Persistence;
     using Microsoft.EntityFrameworkCore;
 
-    public class CreateUser : IClaimlessCommandHandler<CreateUserDto, ApplicationUserDto>
+    public class CreateUser : ICommandHandler<CreateUserDto, ApplicationUserDto>
     {
         private readonly ILogger<CreateBasicAuthUser> logger;
         private readonly AuthenticationWriteDbContext authenticationWriteDbContext;

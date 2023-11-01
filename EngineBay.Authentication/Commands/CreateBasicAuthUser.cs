@@ -1,6 +1,5 @@
 namespace EngineBay.Authentication
 {
-    using System.Security.Claims;
     using BCrypt.Net;
     using EngineBay.Core;
     using EngineBay.Persistence;
@@ -18,10 +17,7 @@ namespace EngineBay.Authentication
             this.authenticationWriteDbContext = authenticationWriteDbContext;
         }
 
-        public async Task<ApplicationUserDto> Handle(
-            CreateBasicAuthUserDto createBasicAuthUserDto,
-            ClaimsPrincipal user,
-            CancellationToken cancellation)
+        public async Task<ApplicationUserDto> Handle(CreateBasicAuthUserDto createBasicAuthUserDto, CancellationToken cancellation)
         {
             if (createBasicAuthUserDto is null)
             {

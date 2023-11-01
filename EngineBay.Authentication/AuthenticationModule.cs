@@ -59,9 +59,9 @@ namespace EngineBay.Authentication
 
                     break;
                 case AuthenticationTypes.Basic:
-                    endpoints.MapPost("/register", async (CreateBasicAuthUserDto createBasicAuthUserDto, CreateBasicAuthUser command, ClaimsPrincipal claimsPrincipal, CancellationToken cancellation) =>
+                    endpoints.MapPost("/register", async (CreateBasicAuthUserDto createBasicAuthUserDto, CreateBasicAuthUser command, CancellationToken cancellation) =>
                     {
-                        var applicationUserDto = await command.Handle(createBasicAuthUserDto, claimsPrincipal, cancellation);
+                        var applicationUserDto = await command.Handle(createBasicAuthUserDto, cancellation);
 
                         return Results.Ok(applicationUserDto);
                     }).AllowAnonymous();

@@ -6,12 +6,12 @@ namespace EngineBay.Authentication
 
     public class AuthenticationWriteDbContext : AuthenticationQueryDbContext
     {
-        private readonly AuditingInterceptor databaseAuditingInterceptor;
+        private readonly IAuditingInterceptor auditingInterceptor;
 
-        public AuthenticationWriteDbContext(DbContextOptions<ModuleWriteDbContext> options, AuditingInterceptor databaseAuditingInterceptor)
+        public AuthenticationWriteDbContext(DbContextOptions<ModuleWriteDbContext> options, IAuditingInterceptor auditingInterceptor)
             : base(options)
         {
-            this.databaseAuditingInterceptor = databaseAuditingInterceptor;
+            this.auditingInterceptor = auditingInterceptor;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -21,7 +21,7 @@ namespace EngineBay.Authentication
                 throw new ArgumentNullException(nameof(optionsBuilder));
             }
 
-            optionsBuilder.AddInterceptors(this.databaseAuditingInterceptor);
+            optionsBuilder.AddInterceptors(this.auditingInterceptor);
 
             base.OnConfiguring(optionsBuilder);
         }

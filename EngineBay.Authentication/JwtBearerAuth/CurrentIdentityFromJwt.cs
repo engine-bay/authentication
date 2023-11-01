@@ -2,7 +2,6 @@
 {
     using EngineBay.Core;
     using Microsoft.AspNetCore.Http;
-    using Microsoft.Extensions.Primitives;
 
     public class CurrentIdentityFromJwt : ICurrentIdentity
     {
@@ -13,13 +12,27 @@
                 throw new ArgumentNullException(nameof(httpContextAccessor));
             }
 
-            // TODO: use the claims principal to get the current identity
-            var name = httpContextAccessor.HttpContext?.User?.Identity?.Name ?? throw new ArgumentException("Could not find user name from HTTP context");
-            this.Username = name;
+            var context = httpContextAccessor.HttpContext;
 
-            var values = default(StringValues);
-            httpContextAccessor.HttpContext?.Request.Headers.TryGetValue("User-ID", out values);
-            this.UserId = Guid.Parse(values.Single() ?? string.Empty);
+            if (context == null)
+            {
+                var user = new SystemUser();
+                this.UserId = user.Id;
+                this.Username = user.Username;
+            }
+            else if (string.IsNullOrEmpty(context.Request.Headers["Authorization"].ToString()))
+            {
+                var user = new UnauthenticatedUser();
+                this.UserId = user.Id;
+                this.Username = user.Username;
+            }
+            else
+            {
+                this.Username = httpContextAccessor.HttpContext?.User?.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.Name)?.Value ?? throw new ArgumentException("Could not find user name from JWT claim");
+
+                var idString = httpContextAccessor.HttpContext?.User?.Claims.FirstOrDefault(c => c.Type == CustomClaimTypes.Id)?.Value ?? throw new ArgumentException("Could not find user ID from JWT claim");
+                this.UserId = Guid.Parse(idString);
+            }
         }
 
         public string Username { get; }
