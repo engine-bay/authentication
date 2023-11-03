@@ -28,9 +28,7 @@
 
             if (context == null)
             {
-                var user = new SystemUser();
-                this.userId = user.Id;
-                this.Username = user.Username;
+                this.Username = DefaultAuthenticationConfigurationConstants.SystemUserName;
             }
             else if (string.IsNullOrEmpty(context.Request.Headers["Authorization"].ToString()))
             {
@@ -45,9 +43,9 @@
                 var credentialstring = Encoding.UTF8.GetString(Convert.FromBase64String(token));
                 var credentials = credentialstring.Split(':');
                 this.Username = credentials[0];
-
-                this.getCurrentUser = getCurrentUser;
             }
+
+            this.getCurrentUser = getCurrentUser;
         }
 
         public Guid UserId => this.GetUserIdAsync(CancellationToken.None).Result;
