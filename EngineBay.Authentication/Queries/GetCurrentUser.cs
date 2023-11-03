@@ -30,7 +30,7 @@ namespace EngineBay.Authentication
                 throw new ArgumentException(nameof(user.Identity));
             }
 
-            var claim = user.FindFirst(x => x.Type == "name");
+            var claim = user.FindFirst(x => x.Type == CustomClaimTypes.Name);
 
             var username = string.Empty;
 

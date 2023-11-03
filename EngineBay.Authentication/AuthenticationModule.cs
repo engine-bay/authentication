@@ -55,7 +55,7 @@ namespace EngineBay.Authentication
                         var applicationUserDto = await command.Handle(createUserDto, cancellation);
 
                         return Results.Ok(applicationUserDto);
-                    }).RequireAuthorization();
+                    }).AllowAnonymous();
 
                     break;
                 case AuthenticationTypes.Basic:
