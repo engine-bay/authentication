@@ -26,7 +26,7 @@ namespace EngineBay.Authentication
                     services.AddScoped<ICurrentIdentity, CurrentIdentityFromJwt>();
                     break;
                 case AuthenticationTypes.Basic:
-                    Console.WriteLine("Warning: no Basic authentication has been configured. The system is insecure.");
+                    Console.WriteLine("Warning: Basic authentication has been configured. The system is insecure.");
                     BasicAuthenticationConfiguration.Configure(services);
                     services.AddScoped<ICurrentIdentity, CurrentIdentityFromBasicAuth>();
                     break;
