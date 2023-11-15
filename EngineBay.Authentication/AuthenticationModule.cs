@@ -1,10 +1,12 @@
 namespace EngineBay.Authentication
 {
+    using System.Collections.Generic;
     using System.Security.Claims;
     using EngineBay.Core;
     using EngineBay.Persistence;
+    using Microsoft.EntityFrameworkCore;
 
-    public class AuthenticationModule : BaseModule
+    public class AuthenticationModule : BaseModule, IDatabaseModule
     {
         public override IServiceCollection RegisterModule(IServiceCollection services, IConfiguration configuration)
         {
@@ -90,6 +92,11 @@ namespace EngineBay.Authentication
             app.UseAuthorization();
 
             return app;
+        }
+
+        public IReadOnlyCollection<IModuleDbContext> GetRegisteredDbContexts(DbContextOptions<ModuleWriteDbContext> dbOptions)
+        {
+            return new IModuleDbContext[] { new AuthenticationDbContext(dbOptions) };
         }
     }
 }
