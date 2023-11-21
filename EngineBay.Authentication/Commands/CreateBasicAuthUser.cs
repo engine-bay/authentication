@@ -4,7 +4,7 @@ namespace EngineBay.Authentication
     using EngineBay.Core;
     using EngineBay.Persistence;
 
-    public class CreateBasicAuthUser : ICommandHandler<CreateBasicAuthUserDto, ApplicationUserDto>
+    public class CreateBasicAuthUser : ICommandHandler<CreateBasicAuthUserDto, AuthUserDto>
     {
         private readonly ILogger<CreateBasicAuthUser> logger;
         private readonly AuthenticationWriteDbContext authenticationWriteDbContext;
@@ -17,7 +17,7 @@ namespace EngineBay.Authentication
             this.authenticationWriteDbContext = authenticationWriteDbContext;
         }
 
-        public async Task<ApplicationUserDto> Handle(CreateBasicAuthUserDto createBasicAuthUserDto, CancellationToken cancellation)
+        public async Task<AuthUserDto> Handle(CreateBasicAuthUserDto createBasicAuthUserDto, CancellationToken cancellation)
         {
             if (createBasicAuthUserDto is null)
             {
@@ -44,7 +44,7 @@ namespace EngineBay.Authentication
 
             this.logger.RegisteredNewUser();
 
-            return new ApplicationUserDto(newApplicationUser);
+            return new AuthUserDto(newApplicationUser);
         }
     }
 }
