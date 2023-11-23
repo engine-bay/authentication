@@ -7,10 +7,7 @@ namespace EngineBay.Authentication
     {
         public RoleDto(Role role)
         {
-            if (role is null)
-            {
-                throw new ArgumentNullException(nameof(role));
-            }
+            ArgumentNullException.ThrowIfNull(role);
 
             this.Id = role.Id;
             this.Name = role.Name;
