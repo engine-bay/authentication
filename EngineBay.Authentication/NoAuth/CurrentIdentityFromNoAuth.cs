@@ -7,10 +7,7 @@
     {
         public CurrentIdentityFromNoAuth(IHttpContextAccessor httpContextAccessor)
         {
-            if (httpContextAccessor == null)
-            {
-                throw new ArgumentNullException(nameof(httpContextAccessor));
-            }
+            ArgumentNullException.ThrowIfNull(httpContextAccessor);
 
             if (httpContextAccessor.HttpContext == null)
             {

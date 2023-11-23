@@ -17,10 +17,7 @@ namespace EngineBay.Authentication
 
         public async Task<ApplicationUserDto> Handle(CreateUserDto createUserDto, CancellationToken cancellation)
         {
-            if (createUserDto is null)
-            {
-                throw new ArgumentNullException(nameof(createUserDto));
-            }
+            ArgumentNullException.ThrowIfNull(createUserDto);
 
             var newApplicationUser = new ApplicationUser(createUserDto.Username);
 

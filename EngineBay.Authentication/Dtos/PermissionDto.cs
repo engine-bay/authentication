@@ -7,10 +7,7 @@ namespace EngineBay.Authentication
     {
         public PermissionDto(Permission permission)
         {
-            if (permission is null)
-            {
-                throw new ArgumentNullException(nameof(permission));
-            }
+            ArgumentNullException.ThrowIfNull(permission);
 
             this.Id = permission.Id;
             this.Name = permission.Name;

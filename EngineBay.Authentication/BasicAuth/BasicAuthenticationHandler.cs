@@ -15,10 +15,9 @@ namespace EngineBay.Authentication
             IOptionsMonitor<AuthenticationSchemeOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
-            ISystemClock clock,
             AuthenticationDbContext authenticationDbContext,
             VerifyBasicAuthCredentials verifyBasicAuthCredentials)
-            : base(options, logger, encoder, clock)
+            : base(options, logger, encoder)
         {
             this.authenticationDbContext = authenticationDbContext;
             this.verifyBasicAuthCredentials = verifyBasicAuthCredentials;

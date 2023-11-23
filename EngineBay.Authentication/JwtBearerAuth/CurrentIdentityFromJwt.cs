@@ -12,12 +12,10 @@
 
         public CurrentIdentityFromJwt(IHttpContextAccessor httpContextAccessor, GetCurrentUser getCurrentUser)
         {
-            this.getCurrentUser = getCurrentUser ?? throw new ArgumentNullException(nameof(getCurrentUser));
+            ArgumentNullException.ThrowIfNull(httpContextAccessor);
+            ArgumentNullException.ThrowIfNull(getCurrentUser);
 
-            if (httpContextAccessor == null)
-            {
-                throw new ArgumentNullException(nameof(httpContextAccessor));
-            }
+            this.getCurrentUser = getCurrentUser;
 
             var context = httpContextAccessor.HttpContext;
 

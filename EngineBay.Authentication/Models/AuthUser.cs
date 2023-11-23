@@ -19,10 +19,7 @@ namespace EngineBay.Authentication
 
         public static new void CreateDataAnnotations(ModelBuilder modelBuilder)
         {
-            if (modelBuilder is null)
-            {
-                throw new ArgumentNullException(nameof(modelBuilder));
-            }
+            ArgumentNullException.ThrowIfNull(modelBuilder);
 
             modelBuilder.Entity<AuthUser>().ToTable(typeof(AuthUser).Name.Pluralize());
 

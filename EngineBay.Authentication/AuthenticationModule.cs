@@ -49,6 +49,7 @@ namespace EngineBay.Authentication
         {
             var authenticationType = AuthenticationConfiguration.GetAuthenticationMethod();
 
+#pragma warning disable ASP0022 // allow duplicate routes for each of the authentication providers
             switch (authenticationType)
             {
                 case AuthenticationTypes.JwtBearer:
@@ -76,6 +77,7 @@ namespace EngineBay.Authentication
                     }).AllowAnonymous();
                     break;
             }
+#pragma warning restore ASP0022
 
             endpoints.MapGet("/userInfo", async (GetCurrentUser query, ClaimsPrincipal claimsPrincipal, CancellationToken cancellation) =>
             {

@@ -7,10 +7,7 @@ namespace EngineBay.Authentication
     {
         public GroupDto(Group group)
         {
-            if (group is null)
-            {
-                throw new ArgumentNullException(nameof(group));
-            }
+            ArgumentNullException.ThrowIfNull(group);
 
             this.Id = group.Id;
             this.Name = group.Name;
