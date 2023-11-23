@@ -3,9 +3,10 @@ namespace EngineBay.Authentication
     using System.Security.Claims;
     using EngineBay.Core;
     using EngineBay.Logging;
+    using EngineBay.Persistence;
     using Microsoft.EntityFrameworkCore;
 
-    public class GetCurrentUser : IQueryHandler<ClaimsPrincipal, AuthUserDto>
+    public class GetCurrentUser : IQueryHandler<ClaimsPrincipal, ApplicationUserDto>
     {
         private readonly ILogger<GetCurrentUser> logger;
         private readonly AuthenticationQueryDbContext authenticationQueryDbContext;
@@ -17,7 +18,7 @@ namespace EngineBay.Authentication
         }
 
         /// <inheritdoc/>
-        public async Task<AuthUserDto> Handle(ClaimsPrincipal user, CancellationToken cancellation)
+        public async Task<ApplicationUserDto> Handle(ClaimsPrincipal user, CancellationToken cancellation)
         {
             var shouldLogSensitiveData = LoggingConfiguration.IsSensitiveDataLoggingEnabled();
             if (user is null)
@@ -63,7 +64,7 @@ namespace EngineBay.Authentication
                 throw new ArgumentException(nameof(applicationUser));
             }
 
-            return new AuthUserDto(applicationUser);
+            return new ApplicationUserDto(applicationUser);
         }
     }
 }

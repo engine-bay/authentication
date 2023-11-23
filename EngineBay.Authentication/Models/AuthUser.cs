@@ -1,10 +1,16 @@
-namespace EngineBay.Persistence
+namespace EngineBay.Authentication
 {
+    using EngineBay.Persistence;
     using Humanizer;
     using Microsoft.EntityFrameworkCore;
 
     public class AuthUser : AuditableModel
     {
+        public AuthUser(Guid userId)
+        {
+            this.ApplicationUserId = userId;
+        }
+
         public Guid ApplicationUserId { get; set; }
 
         public virtual ApplicationUser? ApplicationUser { get; set; }
@@ -38,7 +44,7 @@ namespace EngineBay.Persistence
 
             modelBuilder.Entity<AuthUser>().HasIndex(x => x.ApplicationUserId).IsUnique();
 
-            modelBuilder.Entity<AuthUser>().HasOne(x => x.ApplicationUser).WithMany().HasForeignKey(x => x.ApplicationUserId);
+            modelBuilder.Entity<AuthUser>().HasOne(x => x.ApplicationUser).WithOne().HasForeignKey(typeof(AuthUser), nameof(AuthUser.ApplicationUserId));
 
             modelBuilder.Entity<AuthUser>().HasMany(x => x.Roles).WithMany(x => x.Users);
         }

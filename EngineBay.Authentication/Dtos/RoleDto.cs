@@ -16,10 +16,10 @@ namespace EngineBay.Authentication
             this.Name = role.Name;
             this.Description = role.Description;
 
-            if (role.Users != null)
+            if (role.Groups != null)
             {
-                this.AuthUserDtos = role.Users
-                    .Select(x => new AuthUserDto(x))
+                this.Groups = role.Groups
+                    .Select(x => new GroupDto(x))
                     .ToList();
             }
         }
@@ -30,6 +30,6 @@ namespace EngineBay.Authentication
 
         public string? Description { get; set; }
 
-        public ICollection<AuthUserDto>? AuthUserDtos { get; set; }
+        public ICollection<GroupDto>? Groups { get; set; }
     }
 }

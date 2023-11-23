@@ -1,5 +1,6 @@
-namespace EngineBay.Persistence
+namespace EngineBay.Authentication
 {
+    using EngineBay.Persistence;
     using Humanizer;
     using Microsoft.EntityFrameworkCore;
 
