@@ -3,6 +3,7 @@ namespace EngineBay.Authentication
     using System.Security.Claims;
     using EngineBay.Core;
     using EngineBay.Logging;
+    using EngineBay.Persistence;
     using Microsoft.EntityFrameworkCore;
 
     public class GetCurrentUser : IQueryHandler<ClaimsPrincipal, ApplicationUserDto>
