@@ -20,17 +20,10 @@ namespace EngineBay.Authentication
         /// <inheritdoc/>
         public async Task<ApplicationUser> Handle(ClaimsPrincipal user, CancellationToken cancellation)
         {
+            ArgumentNullException.ThrowIfNull(user);
+            ArgumentNullException.ThrowIfNull(user.Identity);
+
             var shouldLogSensitiveData = LoggingConfiguration.IsSensitiveDataLoggingEnabled();
-
-            if (user is null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            if (user.Identity is null)
-            {
-                throw new ArgumentException(nameof(user.Identity));
-            }
 
             if (shouldLogSensitiveData)
             {

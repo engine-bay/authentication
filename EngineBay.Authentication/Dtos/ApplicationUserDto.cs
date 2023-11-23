@@ -7,10 +7,7 @@ namespace EngineBay.Authentication
     {
         public ApplicationUserDto(ApplicationUser applicationUser)
         {
-            if (applicationUser is null)
-            {
-                throw new ArgumentNullException(nameof(applicationUser));
-            }
+            ArgumentNullException.ThrowIfNull(applicationUser);
 
             this.Id = applicationUser.Id;
             this.Username = applicationUser.Username;
