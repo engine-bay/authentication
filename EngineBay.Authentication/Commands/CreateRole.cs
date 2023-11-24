@@ -29,10 +29,6 @@ namespace EngineBay.Authentication
             {
                 this.authDb.Groups.AttachRange(groups);
             }
-            else
-            {
-                groups = new List<Group>();
-            }
 
             var role = new Role()
             {

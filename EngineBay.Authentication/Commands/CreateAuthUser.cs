@@ -23,7 +23,17 @@ namespace EngineBay.Authentication
 
             this.validator.ValidateAndThrow(createAuthUserDto);
 
-            var authUser = new AuthUser(createAuthUserDto.UserId);
+            var roles = createAuthUserDto.Roles?.Select(roleDto => new Role() { Id = roleDto.Id }).ToList();
+
+            if (roles != null)
+            {
+                this.authDb.Roles.AttachRange(roles);
+            }
+
+            var authUser = new AuthUser(createAuthUserDto.UserId)
+            {
+                Roles = roles,
+            };
 
             var addedUser = await this.authDb.AuthUsers.AddAsync(authUser, cancellation) ?? throw new PersistenceException("Did not succesfully add auth user.");
             await this.authDb.SaveChangesAsync(cancellation);
