@@ -1,5 +1,7 @@
 namespace EngineBay.Authentication
 {
+    using EngineBay.Core;
+
     public static class AuthorizationEndpoints
     {
         private const string RoleBasePath = "/roles";
@@ -10,9 +12,12 @@ namespace EngineBay.Authentication
         {
             endpoints.MapGet(
                 RoleBasePath,
-                () =>
+                async (QueryRoles handler, int? skip, int? limit, string? sortBy, SortOrderType? sortOrder, CancellationToken cancellation) =>
                 {
-                    return Results.NotFound();
+                    var paginationParameters = new PaginationParameters(skip, limit, sortBy, sortOrder);
+
+                    var paginatedDtos = await handler.Handle(paginationParameters, cancellation);
+                    return Results.Ok(paginatedDtos);
                 })
                 .WithTags(ApiGroupNameConstants.Role);
 
@@ -51,9 +56,12 @@ namespace EngineBay.Authentication
 
             endpoints.MapGet(
                 GroupBasePath,
-                () =>
+                async (QueryGroups handler, int? skip, int? limit, string? sortBy, SortOrderType? sortOrder, CancellationToken cancellation) =>
                 {
-                    return Results.NotFound();
+                    var paginationParameters = new PaginationParameters(skip, limit, sortBy, sortOrder);
+
+                    var paginatedDtos = await handler.Handle(paginationParameters, cancellation);
+                    return Results.Ok(paginatedDtos);
                 })
                 .WithTags(ApiGroupNameConstants.Group);
 
@@ -68,9 +76,12 @@ namespace EngineBay.Authentication
 
             endpoints.MapGet(
                 PermissionBasePath,
-                () =>
+                async (QueryPermissions handler, int? skip, int? limit, string? sortBy, SortOrderType? sortOrder, CancellationToken cancellation) =>
                 {
-                    return Results.NotFound();
+                    var paginationParameters = new PaginationParameters(skip, limit, sortBy, sortOrder);
+
+                    var paginatedDtos = await handler.Handle(paginationParameters, cancellation);
+                    return Results.Ok(paginatedDtos);
                 })
                 .WithTags(ApiGroupNameConstants.Permission);
 
