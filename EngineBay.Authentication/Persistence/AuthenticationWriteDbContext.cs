@@ -16,10 +16,7 @@ namespace EngineBay.Authentication
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (optionsBuilder is null)
-            {
-                throw new ArgumentNullException(nameof(optionsBuilder));
-            }
+            ArgumentNullException.ThrowIfNull(optionsBuilder);
 
             optionsBuilder.AddInterceptors(this.auditingInterceptor);
 

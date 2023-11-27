@@ -14,15 +14,8 @@
 
         public CurrentIdentityFromBasicAuth(IHttpContextAccessor httpContextAccessor, GetCurrentUser getCurrentUser)
         {
-            if (httpContextAccessor == null)
-            {
-                throw new ArgumentNullException(nameof(httpContextAccessor));
-            }
-
-            if (getCurrentUser == null)
-            {
-                throw new ArgumentNullException(nameof(getCurrentUser));
-            }
+            ArgumentNullException.ThrowIfNull(httpContextAccessor);
+            ArgumentNullException.ThrowIfNull(getCurrentUser);
 
             var context = httpContextAccessor.HttpContext;
 

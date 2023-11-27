@@ -20,10 +20,7 @@ namespace EngineBay.Authentication
         /// <inheritdoc/>
         public async Task<bool> Handle(BasicAuthCredentialsDto credentialsDto, CancellationToken cancellation)
         {
-            if (credentialsDto is null)
-            {
-                throw new ArgumentNullException(nameof(credentialsDto));
-            }
+            ArgumentNullException.ThrowIfNull(credentialsDto);
 
             var claimsPrincipal = credentialsDto.ClaimsPrincipal;
             var password = credentialsDto.Password;
