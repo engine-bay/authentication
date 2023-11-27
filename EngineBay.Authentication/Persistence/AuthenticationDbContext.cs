@@ -24,6 +24,10 @@ namespace EngineBay.Authentication
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             BasicAuthCredential.CreateDataAnnotations(modelBuilder);
+            AuthUser.CreateDataAnnotations(modelBuilder);
+            Role.CreateDataAnnotations(modelBuilder);
+            Group.CreateDataAnnotations(modelBuilder);
+            Permission.CreateDataAnnotations(modelBuilder);
 
             base.OnModelCreating(modelBuilder);
         }
