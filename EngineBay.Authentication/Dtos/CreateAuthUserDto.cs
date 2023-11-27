@@ -9,6 +9,6 @@ namespace EngineBay.Authentication
 
         public Guid UserId { get; set; }
 
-        public ICollection<RoleDto>? Roles { get; set; }
+        public ICollection<Guid>? RoleIds { get; set; }
     }
 }

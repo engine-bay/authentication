@@ -30,10 +30,10 @@ namespace EngineBay.Authentication
                 Name = createPermissionDto.Name,
             };
 
-            var addedUser = await this.authDb.Permissions.AddAsync(permission, cancellation) ?? throw new PersistenceException("Did not succesfully add auth user.");
+            var addedPermission = await this.authDb.Permissions.AddAsync(permission, cancellation) ?? throw new PersistenceException("Failed to add permission.");
             await this.authDb.SaveChangesAsync(cancellation);
 
-            return new PermissionDto(addedUser.Entity);
+            return new PermissionDto(addedPermission.Entity);
         }
     }
 }

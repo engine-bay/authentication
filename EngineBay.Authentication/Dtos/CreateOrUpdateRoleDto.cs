@@ -1,8 +1,8 @@
 namespace EngineBay.Authentication
 {
-    public class CreateRoleDto
+    public class CreateOrUpdateRoleDto
     {
-        public CreateRoleDto(string name)
+        public CreateOrUpdateRoleDto(string name)
         {
             this.Name = name;
         }
@@ -11,6 +11,6 @@ namespace EngineBay.Authentication
 
         public string? Description { get; set; }
 
-        public ICollection<GroupDto>? Groups { get; set; }
+        public ICollection<Guid>? GroupIds { get; set; }
     }
 }

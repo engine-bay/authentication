@@ -19,11 +19,11 @@ namespace EngineBay.Authentication
         {
             ArgumentNullException.ThrowIfNull(query);
 
-            var items = this.dbContext.Groups.AsExpandable();
+            var expression = this.dbContext.Groups.AsExpandable();
             var format = new DateTimeFormatInfo();
             var limit = query.Limit;
             var skip = limit > 0 ? query.Skip : 0;
-            var total = await items.CountAsync(cancellation);
+            var total = await expression.CountAsync(cancellation);
 
             Expression<Func<Group, string?>> sortByPredicate = query.SortBy switch
             {
@@ -35,10 +35,10 @@ namespace EngineBay.Authentication
                 _ => throw new ArgumentException($"Group SortBy type {query.SortBy} not found"),
             };
 
-            items = this.Sort(items, sortByPredicate, query);
-            items = this.Paginate(items, query);
+            expression = this.Sort(expression, sortByPredicate, query);
+            expression = this.Paginate(expression, query);
 
-            var groups = limit > 0 ? await items.ToListAsync(cancellation) : new List<Group>();
+            var groups = limit > 0 ? await expression.ToListAsync(cancellation) : new List<Group>();
 
             var groupDtos = groups.Select(group => new GroupDto(group));
             return new PaginatedDto<GroupDto>(total, skip, limit, groupDtos);

@@ -19,11 +19,11 @@ namespace EngineBay.Authentication
         {
             ArgumentNullException.ThrowIfNull(query);
 
-            var items = this.dbContext.Permissions.AsExpandable();
+            var expression = this.dbContext.Permissions.AsExpandable();
             var format = new DateTimeFormatInfo();
             var limit = query.Limit;
             var skip = limit > 0 ? query.Skip : 0;
-            var total = await items.CountAsync(cancellation);
+            var total = await expression.CountAsync(cancellation);
 
             Expression<Func<Permission, string?>> sortByPredicate = query.SortBy switch
             {
@@ -34,10 +34,10 @@ namespace EngineBay.Authentication
                 _ => throw new ArgumentException($"Permission SortBy type {query.SortBy} not found"),
             };
 
-            items = this.Sort(items, sortByPredicate, query);
-            items = this.Paginate(items, query);
+            expression = this.Sort(expression, sortByPredicate, query);
+            expression = this.Paginate(expression, query);
 
-            var permissions = limit > 0 ? await items.ToListAsync(cancellation) : new List<Permission>();
+            var permissions = limit > 0 ? await expression.ToListAsync(cancellation) : new List<Permission>();
 
             var permissionDtos = permissions.Select(permission => new PermissionDto(permission));
             return new PaginatedDto<PermissionDto>(total, skip, limit, permissionDtos);

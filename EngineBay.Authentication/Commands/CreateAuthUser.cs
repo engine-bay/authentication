@@ -3,6 +3,7 @@ namespace EngineBay.Authentication
     using EngineBay.Core;
     using EngineBay.Persistence;
     using FluentValidation;
+    using Microsoft.EntityFrameworkCore;
 
     public class CreateAuthUser : ICommandHandler<CreateAuthUserDto, AuthUserDto>
     {
@@ -23,15 +24,15 @@ namespace EngineBay.Authentication
 
             this.validator.ValidateAndThrow(createAuthUserDto);
 
-            var roles = createAuthUserDto.Roles?.Select(roleDto => new Role() { Id = roleDto.Id }).ToList();
-
-            if (roles != null)
+            List<Role>? roles = null;
+            if (createAuthUserDto.RoleIds != null)
             {
-                this.authDb.Roles.AttachRange(roles);
+                roles = await this.authDb.Roles.Where(r => createAuthUserDto.RoleIds.Contains(r.Id)).ToListAsync(cancellation);
             }
 
-            var authUser = new AuthUser(createAuthUserDto.UserId)
+            var authUser = new AuthUser()
             {
+                ApplicationUserId = createAuthUserDto.UserId,
                 Roles = roles,
             };
 

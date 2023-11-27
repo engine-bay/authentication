@@ -3,6 +3,7 @@ namespace EngineBay.Authentication
     using EngineBay.Core;
     using EngineBay.Persistence;
     using FluentValidation;
+    using Microsoft.EntityFrameworkCore;
 
     public class CreateGroup : ICommandHandler<CreateGroupDto, GroupDto>
     {
@@ -23,11 +24,11 @@ namespace EngineBay.Authentication
 
             this.validator.ValidateAndThrow(createGroupDto);
 
-            var permissions = createGroupDto.Permissions?.Select(permissionDto => new Permission() { Id = permissionDto.Id }).ToList();
-
-            if (permissions != null)
+            // Need to make same decision as for create role, but I think in this case it's more likely for the models to already be in the context since this will be used during the database seeding process
+            List<Permission>? permissions = null;
+            if (createGroupDto.PermissionIds != null)
             {
-                this.authDb.Permissions.AttachRange(permissions);
+                permissions = await this.authDb.Permissions.Where(p => createGroupDto.PermissionIds.Contains(p.Id)).ToListAsync(cancellation);
             }
 
             var group = new Group()
@@ -37,10 +38,10 @@ namespace EngineBay.Authentication
                 Permissions = permissions,
             };
 
-            var addedUser = await this.authDb.Groups.AddAsync(group, cancellation) ?? throw new PersistenceException("Did not succesfully add auth user.");
+            var addedPermission = await this.authDb.Groups.AddAsync(group, cancellation) ?? throw new PersistenceException("Failed to add group.");
             await this.authDb.SaveChangesAsync(cancellation);
 
-            return new GroupDto(addedUser.Entity);
+            return new GroupDto(addedPermission.Entity);
         }
     }
 }

@@ -6,7 +6,7 @@ namespace EngineBay.Authentication
     {
         private const string RoleBasePath = "/roles";
         private const string GroupBasePath = "/groups";
-        private const string PermissionBasePath = "/permissions ";
+        private const string PermissionBasePath = "/permissions";
 
         public static void MapEndpoints(RouteGroupBuilder endpoints)
         {
@@ -32,25 +32,33 @@ namespace EngineBay.Authentication
 
             endpoints.MapPost(
                 RoleBasePath,
-                () =>
+                (CreateRole handler, CreateOrUpdateRoleDto createRoleDto, CancellationToken cancellation) =>
                 {
-                    return Results.NotFound();
+                    var result = handler.Handle(createRoleDto, cancellation);
+                    return Results.Ok(result);
                 })
                 .WithTags(ApiGroupNameConstants.Role);
 
             endpoints.MapPut(
                 RoleBasePath + "/{id:guid}",
-                () =>
+                (UpdateRole handler, Guid id, CreateOrUpdateRoleDto createRoleDto, CancellationToken cancellation) =>
                 {
-                    return Results.NotFound();
+                    var command = new UpdateRoleCommand(id, createRoleDto.Name)
+                    {
+                        Description = createRoleDto.Description,
+                        GroupIds = createRoleDto.GroupIds,
+                    };
+                    var result = handler.Handle(command, cancellation);
+                    return Results.Ok(result);
                 })
                 .WithTags(ApiGroupNameConstants.Role);
 
             endpoints.MapDelete(
                 RoleBasePath + "/{id:guid}",
-                () =>
+                (DeleteRole handler, Guid id, CancellationToken cancellation) =>
                 {
-                    return Results.NotFound();
+                    var result = handler.Handle(id, cancellation);
+                    return Results.Ok(result);
                 })
                 .WithTags(ApiGroupNameConstants.Role);
 

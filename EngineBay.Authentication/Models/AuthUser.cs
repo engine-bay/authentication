@@ -6,11 +6,6 @@ namespace EngineBay.Authentication
 
     public class AuthUser : AuditableModel
     {
-        public AuthUser(Guid userId)
-        {
-            this.ApplicationUserId = userId;
-        }
-
         public Guid ApplicationUserId { get; set; }
 
         public virtual ApplicationUser? ApplicationUser { get; set; }
