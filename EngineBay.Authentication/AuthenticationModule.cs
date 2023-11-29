@@ -114,7 +114,16 @@ namespace EngineBay.Authentication
 
         public override WebApplication AddMiddleware(WebApplication app)
         {
-            app.UseAuthorization();
+            var authenticationType = AuthenticationConfiguration.GetAuthenticationMethod();
+            switch (authenticationType)
+            {
+                case AuthenticationTypes.JwtBearer:
+                case AuthenticationTypes.Basic:
+                    app.UseAuthentication();
+                    app.UseAuthorization();
+
+                    break;
+            }
 
             return app;
         }
