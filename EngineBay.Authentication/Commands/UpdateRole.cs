@@ -23,7 +23,6 @@ namespace EngineBay.Authentication
 
             this.validator.ValidateAndThrow(updateRoleCommand);
 
-            // Must make same decision as CreateRole
             List<Group>? groups = null;
             if (updateRoleCommand.GroupIds != null)
             {

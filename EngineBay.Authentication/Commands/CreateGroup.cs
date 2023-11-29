@@ -24,7 +24,6 @@ namespace EngineBay.Authentication
 
             this.validator.ValidateAndThrow(createGroupDto);
 
-            // Need to make same decision as for create role, but I think in this case it's more likely for the models to already be in the context since this will be used during the database seeding process
             List<Permission>? permissions = null;
             if (createGroupDto.PermissionIds != null)
             {
