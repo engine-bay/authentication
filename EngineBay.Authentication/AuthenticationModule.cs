@@ -4,6 +4,7 @@ namespace EngineBay.Authentication
     using System.Security.Claims;
     using EngineBay.Core;
     using EngineBay.Persistence;
+    using FluentValidation;
     using Microsoft.EntityFrameworkCore;
 
     public class AuthenticationModule : BaseModule, IDatabaseModule
@@ -13,11 +14,31 @@ namespace EngineBay.Authentication
             // Register commands
             services.AddTransient<CreateUser>();
             services.AddTransient<CreateBasicAuthUser>();
+            services.AddTransient<CreateAuthUser>();
+            services.AddTransient<CreateRole>();
+            services.AddTransient<UpdateRole>();
+            services.AddTransient<DeleteRole>();
+            services.AddTransient<CreateGroup>();
+            services.AddTransient<CreatePermission>();
 
             // Register queries
             services.AddTransient<GetApplicationUser>();
             services.AddTransient<GetCurrentUser>();
             services.AddTransient<VerifyBasicAuthCredentials>();
+            services.AddTransient<GetAuthUser>();
+            services.AddTransient<GetRole>();
+            services.AddTransient<QueryRoles>();
+            services.AddTransient<GetGroup>();
+            services.AddTransient<QueryGroups>();
+            services.AddTransient<GetPermission>();
+            services.AddTransient<QueryPermissions>();
+
+            // Register validators
+            services.AddTransient<IValidator<CreateAuthUserDto>, CreateAuthUserDtoValidator>();
+            services.AddTransient<IValidator<CreateOrUpdateRoleDto>, CreateRoleDtoValidator>();
+            services.AddTransient<IValidator<UpdateRoleCommand>, UpdateRoleCommandValidator>();
+            services.AddTransient<IValidator<CreateGroupDto>, CreateGroupDtoValidator>();
+            services.AddTransient<IValidator<CreatePermissionDto>, CreatePermissionDtoValidator>();
 
             var authenticationType = AuthenticationConfiguration.GetAuthenticationMethod();
 
@@ -47,6 +68,8 @@ namespace EngineBay.Authentication
 
         public override RouteGroupBuilder MapEndpoints(RouteGroupBuilder endpoints)
         {
+            AuthorizationEndpoints.MapEndpoints(endpoints);
+
             var authenticationType = AuthenticationConfiguration.GetAuthenticationMethod();
 
 #pragma warning disable ASP0022 // allow duplicate routes for each of the authentication providers
