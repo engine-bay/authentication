@@ -25,9 +25,10 @@ namespace EngineBay.Authentication
             this.validator.ValidateAndThrow(createGroupDto);
 
             List<Permission>? permissions = null;
-            if (createGroupDto.PermissionIds != null)
+            if (createGroupDto.PermissionNames != null)
             {
-                permissions = await this.authDb.Permissions.Where(p => createGroupDto.PermissionIds.Contains(p.Id)).ToListAsync(cancellation);
+                permissions = await this.authDb.Permissions.Where(p => createGroupDto.PermissionNames.Contains(p.Name))
+                    .ToListAsync(cancellation);
             }
 
             var group = new Group()
@@ -37,7 +38,8 @@ namespace EngineBay.Authentication
                 Permissions = permissions,
             };
 
-            var addedPermission = await this.authDb.Groups.AddAsync(group, cancellation) ?? throw new PersistenceException("Failed to add group.");
+            var addedPermission = await this.authDb.Groups.AddAsync(group, cancellation) ??
+                                  throw new PersistenceException("Failed to add group.");
             await this.authDb.SaveChangesAsync(cancellation);
 
             return new GroupDto(addedPermission.Entity);

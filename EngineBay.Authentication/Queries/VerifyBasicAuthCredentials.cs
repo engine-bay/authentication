@@ -10,7 +10,10 @@ namespace EngineBay.Authentication
         private readonly GetApplicationUser getApplicationUserQuery;
         private readonly AuthenticationQueryDbContext authenticationQueryDbContext;
 
-        public VerifyBasicAuthCredentials(ILogger<VerifyBasicAuthCredentials> logger, GetApplicationUser getApplicationUserQuery, AuthenticationQueryDbContext authenticationQueryDbContext)
+        public VerifyBasicAuthCredentials(
+            ILogger<VerifyBasicAuthCredentials> logger,
+            GetApplicationUser getApplicationUserQuery,
+            AuthenticationQueryDbContext authenticationQueryDbContext)
         {
             this.logger = logger;
             this.getApplicationUserQuery = getApplicationUserQuery;
@@ -43,7 +46,10 @@ namespace EngineBay.Authentication
                 return false;
             }
 
-            var basicAuthCredentials = await this.authenticationQueryDbContext.BasicAuthCredentials.SingleOrDefaultAsync(x => x.ApplicationUserId == applicationUser.Id, cancellation);
+            var basicAuthCredentials =
+                await this.authenticationQueryDbContext.BasicAuthCredentials.SingleOrDefaultAsync(
+                    x => x.ApplicationUserId == applicationUser.Id,
+                    cancellation);
 
             if (basicAuthCredentials is null)
             {

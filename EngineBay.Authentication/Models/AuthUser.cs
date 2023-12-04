@@ -36,7 +36,9 @@ namespace EngineBay.Authentication
 
             modelBuilder.Entity<AuthUser>().HasIndex(x => x.ApplicationUserId).IsUnique();
 
-            modelBuilder.Entity<AuthUser>().HasOne(x => x.ApplicationUser).WithOne().HasForeignKey(typeof(AuthUser), nameof(AuthUser.ApplicationUserId));
+            modelBuilder.Entity<AuthUser>().HasOne(x => x.ApplicationUser).WithOne().HasForeignKey(
+                typeof(AuthUser),
+                nameof(AuthUser.ApplicationUserId));
 
             modelBuilder.Entity<AuthUser>().HasMany(x => x.Roles).WithMany(x => x.Users);
         }

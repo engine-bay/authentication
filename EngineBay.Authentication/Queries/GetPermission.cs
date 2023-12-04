@@ -15,7 +15,8 @@ namespace EngineBay.Authentication
 
         public async Task<PermissionDto> Handle(Guid query, CancellationToken cancellation)
         {
-            var user = await this.authDb.Permissions.FindAsync(new object[] { query }, cancellation) ?? throw new NotFoundException($"No Permission with Id ${query} found.");
+            var user = await this.authDb.Permissions.FindAsync(new object[] { query }, cancellation) ??
+                       throw new NotFoundException($"No Permission with Id ${query} found.");
 
             return new PermissionDto(user);
         }

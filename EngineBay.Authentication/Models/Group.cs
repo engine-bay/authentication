@@ -29,6 +29,8 @@ namespace EngineBay.Authentication
 
             modelBuilder.Entity<Group>().Property(x => x.Name).IsRequired();
 
+            modelBuilder.Entity<Group>().HasIndex(x => x.Name).IsUnique();
+
             modelBuilder.Entity<Group>().Property(x => x.Description);
 
             modelBuilder.Entity<Group>().Property(x => x.CreatedAt).IsRequired();
