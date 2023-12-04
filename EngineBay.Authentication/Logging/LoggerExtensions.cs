@@ -22,6 +22,16 @@ namespace EngineBay.Authentication
             eventId: 4,
             formatString: "User with username '{Username}' does not exist.");
 
+        private static readonly Action<ILogger, Exception?> UserDoesNotExistValueNoPII = LoggerMessage.Define(
+            logLevel: LogLevel.Warning,
+            eventId: 5,
+            formatString: "User does not exist.");
+
+        private static readonly Action<ILogger, string, Exception?> UserDoesNotExistValuePII = LoggerMessage.Define<string>(
+            logLevel: LogLevel.Trace,
+            eventId: 6,
+            formatString: "User with username '{Username}' does not exist.");
+
         public static void UserDoesNotExist(this ILogger logger)
         {
             UserDoesNotExistValue(logger, null);
@@ -40,6 +50,12 @@ namespace EngineBay.Authentication
         public static void UserDoesNotHaveBasicAuthCredentials(this ILogger logger)
         {
             UserDoesNotHaveBasicAuthCredentialsValue(logger, null);
+        }
+
+        public static void UserDoesNotExistPIISafe(this ILogger logger, string username)
+        {
+            UserDoesNotExistValueNoPII(logger, null);
+            UserDoesNotExistValuePII(logger, username, null);
         }
     }
 }
