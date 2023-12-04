@@ -30,13 +30,13 @@ namespace EngineBay.Authentication
             {
                 var token = authHeader.Substring("Basic ".Length).Trim();
 
-                var credentialstring = Encoding.UTF8.GetString(Convert.FromBase64String(token));
-                var credentials = credentialstring.Split(':');
+                var credentialsString = Encoding.UTF8.GetString(Convert.FromBase64String(token));
+                var credentials = credentialsString.Split(':');
 
                 var username = credentials[0];
                 var password = credentials[1];
 
-                var claims = new[] { new Claim("name", username) };
+                var claims = new[] { new Claim(CustomClaimTypes.Name, username) };
                 var identity = new ClaimsIdentity(claims, "Basic");
                 var claimsPrincipal = new ClaimsPrincipal(identity);
 

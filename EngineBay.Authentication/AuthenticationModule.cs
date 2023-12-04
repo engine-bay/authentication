@@ -5,6 +5,7 @@ namespace EngineBay.Authentication
     using EngineBay.Core;
     using EngineBay.Persistence;
     using FluentValidation;
+    using Microsoft.AspNetCore.Authentication;
     using Microsoft.EntityFrameworkCore;
 
     public class AuthenticationModule : BaseModule, IDatabaseModule
@@ -39,6 +40,8 @@ namespace EngineBay.Authentication
             services.AddTransient<IValidator<UpdateRoleCommand>, UpdateRoleCommandValidator>();
             services.AddTransient<IValidator<CreateGroupDto>, CreateGroupDtoValidator>();
             services.AddTransient<IValidator<CreatePermissionDto>, CreatePermissionDtoValidator>();
+
+            services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
 
             var authenticationType = AuthenticationConfiguration.GetAuthenticationMethod();
 
