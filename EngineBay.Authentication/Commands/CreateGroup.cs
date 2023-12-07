@@ -25,9 +25,9 @@ namespace EngineBay.Authentication
             await this.validator.ValidateAndThrowAsync(createGroupDto, cancellation);
 
             List<Permission>? permissions = null;
-            if (createGroupDto.PermissionNames != null)
+            if (createGroupDto.PermissionIds != null || createGroupDto.PermissionNames != null)
             {
-                permissions = await this.authDb.Permissions.Where(p => createGroupDto.PermissionNames.Contains(p.Name))
+                permissions = await this.authDb.Permissions.Where(p => (createGroupDto.PermissionIds != null && createGroupDto.PermissionIds.Contains(p.Id)) || (createGroupDto.PermissionNames != null && createGroupDto.PermissionNames.Contains(p.Name)))
                     .ToListAsync(cancellation);
             }
 

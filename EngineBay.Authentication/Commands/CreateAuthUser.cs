@@ -25,9 +25,9 @@ namespace EngineBay.Authentication
             await this.validator.ValidateAndThrowAsync(createAuthUserDto, cancellation);
 
             List<Role>? roles = null;
-            if (createAuthUserDto.RoleIds != null)
+            if (createAuthUserDto.RoleIds != null || createAuthUserDto.RoleNames != null)
             {
-                roles = await this.authDb.Roles.Where(r => createAuthUserDto.RoleIds.Contains(r.Id))
+                roles = await this.authDb.Roles.Where(r => (createAuthUserDto.RoleIds != null && createAuthUserDto.RoleIds.Contains(r.Id)) || (createAuthUserDto.RoleNames != null && createAuthUserDto.RoleNames.Contains(r.Name)))
                     .ToListAsync(cancellation);
             }
 

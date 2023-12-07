@@ -11,16 +11,16 @@ namespace EngineBay.Authentication
     {
         private readonly ILogger<ClaimsTransformer> logger;
         private readonly AuthenticationQueryDbContext authenticationQueryDbContext;
-        private readonly GetPermissionsByApplicationUserId getPermissionsByApplication;
+        private readonly GetPermissionsByApplicationUserId getPermissionsByApplicationUserId;
 
         public ClaimsTransformer(
             ILogger<ClaimsTransformer> logger,
             AuthenticationQueryDbContext authenticationQueryDbContext,
-            GetPermissionsByApplicationUserId getPermissionsByApplication)
+            GetPermissionsByApplicationUserId getPermissionsByApplicationUserId)
         {
             this.logger = logger;
             this.authenticationQueryDbContext = authenticationQueryDbContext;
-            this.getPermissionsByApplication = getPermissionsByApplication;
+            this.getPermissionsByApplicationUserId = getPermissionsByApplicationUserId;
         }
 
         public async Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
@@ -66,7 +66,7 @@ namespace EngineBay.Authentication
                 new (CustomClaimTypes.UserId, applicationUser.Id.ToString()),
             };
 
-            var permissions = await this.getPermissionsByApplication.Handle(applicationUser.Id, CancellationToken.None);
+            var permissions = await this.getPermissionsByApplicationUserId.Handle(applicationUser.Id, CancellationToken.None);
             claims.AddRange(permissions.Select(permission => new Claim(CustomClaimTypes.Scope, permission.Name)));
 
             transformed.AddIdentity(new ClaimsIdentity(claims));

@@ -14,12 +14,17 @@ namespace EngineBay.Authentication
 
         public async Task<IEnumerable<PermissionDto>> Handle(Guid applicationUserId, CancellationToken cancellation)
         {
+#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8603 // Possible null reference return.
             var permissions = await this.authDb.Permissions
-                .Where(permission => permission.Groups != null && permission.Groups.Any(
-                    group => group.Roles != null && group.Roles.Any(
-                        role => role.Users != null && role.Users.Any(
-                            user => user.ApplicationUserId == applicationUserId))))
+                .Where(permission => permission.Groups
+                    .SelectMany(group => group.Roles)
+                    .SelectMany(role => role.Users)
+                    .Select(user => user.ApplicationUserId)
+                    .Contains(applicationUserId))
                 .ToListAsync(cancellation);
+#pragma warning restore CS8603 // Possible null reference return.
+#pragma warning restore CS8604 // Possible null reference argument.
 
             return permissions.Select(permission => new PermissionDto(permission));
         }

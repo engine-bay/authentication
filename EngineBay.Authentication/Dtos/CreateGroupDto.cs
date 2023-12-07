@@ -7,9 +7,13 @@ namespace EngineBay.Authentication
             this.Name = name;
         }
 
+        public Guid? Id { get; set; }
+
         public string Name { get; set; }
 
         public string? Description { get; set; }
+
+        public ICollection<Guid>? PermissionIds { get; set; }
 
         public ICollection<string>? PermissionNames { get; set; }
     }
