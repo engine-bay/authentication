@@ -63,18 +63,17 @@ namespace EngineBay.Authentication
             {
                 case AuthenticationTypes.JwtBearer:
                     JwtBearerAuthenticationConfiguration.Configure(services);
-                    services.AddScoped<ICurrentIdentity, CurrentIdentityFromJwt>();
                     break;
                 case AuthenticationTypes.Basic:
                     Console.WriteLine("Warning: Basic authentication has been configured. The system is insecure.");
                     BasicAuthenticationConfiguration.Configure(services);
-                    services.AddScoped<ICurrentIdentity, CurrentIdentityFromBasicAuth>();
                     break;
                 default:
-                    services.AddScoped<ICurrentIdentity, CurrentIdentityFromNoAuth>();
                     Console.WriteLine("Warning: no authentication has been configured. The system is insecure.");
                     break;
             }
+
+            services.AddScoped<ICurrentIdentity, CurrentIdentity>();
 
             // register persistence services
             var databaseConfiguration =
