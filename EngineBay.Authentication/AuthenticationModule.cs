@@ -10,6 +10,19 @@ namespace EngineBay.Authentication
 
     public class AuthenticationModule : BaseModule, IDatabaseModule
     {
+        private readonly string[] permissions =
+        {
+            PermissionConstants.QueryRoles,
+            PermissionConstants.GetRoles,
+            PermissionConstants.CreateRoles,
+            PermissionConstants.UpdateRoles,
+            PermissionConstants.DeleteRoles,
+            PermissionConstants.QueryGroups,
+            PermissionConstants.GetGroups,
+            PermissionConstants.QueryPermissions,
+            PermissionConstants.GetPermissions,
+        };
+
         public override IServiceCollection RegisterModule(IServiceCollection services, IConfiguration configuration)
         {
             // Register commands
@@ -33,6 +46,7 @@ namespace EngineBay.Authentication
             services.AddTransient<QueryGroups>();
             services.AddTransient<GetPermission>();
             services.AddTransient<QueryPermissions>();
+            services.AddTransient<GetPermissionsByApplicationUserId>();
 
             // Register validators
             services.AddTransient<IValidator<CreateAuthUserDto>, CreateAuthUserDtoValidator>();
@@ -62,8 +76,21 @@ namespace EngineBay.Authentication
             services.AddScoped<ICurrentIdentity, CurrentIdentity>();
 
             // register persistence services
-            var databaseConfiguration = new CQRSDatabaseConfiguration<AuthenticationDbContext, AuthenticationQueryDbContext, AuthenticationWriteDbContext>();
+            var databaseConfiguration =
+                new CQRSDatabaseConfiguration<AuthenticationDbContext, AuthenticationQueryDbContext,
+                    AuthenticationWriteDbContext>();
             databaseConfiguration.RegisterDatabases(services);
+
+            // Register authz policies
+            services.AddAuthorization(
+                options =>
+                {
+                    Array.ForEach(
+                        this.permissions,
+                        permission => options.AddPolicy(
+                            permission,
+                            policy => policy.RequireClaim(CustomClaimTypes.Scope, permission)));
+                });
 
             return services;
         }
@@ -78,38 +105,46 @@ namespace EngineBay.Authentication
             switch (authenticationType)
             {
                 case AuthenticationTypes.JwtBearer:
-                    endpoints.MapPost("/register", async (CreateUserDto createUserDto, CreateUser command, CancellationToken cancellation) =>
-                    {
-                        var applicationUserDto = await command.Handle(createUserDto, cancellation);
+                    endpoints.MapPost(
+                        "/register",
+                        async (CreateUserDto createUserDto, CreateUser command, CancellationToken cancellation) =>
+                        {
+                            var applicationUserDto = await command.Handle(createUserDto, cancellation);
 
-                        return Results.Ok(applicationUserDto);
-                    }).AllowAnonymous();
+                            return Results.Ok(applicationUserDto);
+                        }).AllowAnonymous();
 
                     break;
                 case AuthenticationTypes.Basic:
-                    endpoints.MapPost("/register", async (CreateBasicAuthUserDto createBasicAuthUserDto, CreateBasicAuthUser command, CancellationToken cancellation) =>
-                    {
-                        var applicationUserDto = await command.Handle(createBasicAuthUserDto, cancellation);
+                    endpoints.MapPost(
+                        "/register",
+                        async (
+                            CreateBasicAuthUserDto createBasicAuthUserDto,
+                            CreateBasicAuthUser command,
+                            CancellationToken cancellation) =>
+                        {
+                            var applicationUserDto = await command.Handle(createBasicAuthUserDto, cancellation);
 
-                        return Results.Ok(applicationUserDto);
-                    }).AllowAnonymous();
+                            return Results.Ok(applicationUserDto);
+                        }).AllowAnonymous();
 
                     break;
                 case AuthenticationTypes.None:
-                    endpoints.MapPost("/register", (CancellationToken cancellation) =>
-                    {
-                        throw new NotImplementedException();
-                    }).AllowAnonymous();
+                    endpoints.MapPost(
+                        "/register",
+                        (CancellationToken cancellation) => { throw new NotImplementedException(); }).AllowAnonymous();
                     break;
             }
 #pragma warning restore ASP0022
 
-            endpoints.MapGet("/userInfo", async (GetCurrentUser query, ClaimsPrincipal claimsPrincipal, CancellationToken cancellation) =>
-            {
-                var applicationUserDto = await query.Handle(claimsPrincipal, cancellation);
+            endpoints.MapGet(
+                "/userInfo",
+                async (GetCurrentUser query, ClaimsPrincipal claimsPrincipal, CancellationToken cancellation) =>
+                {
+                    var applicationUserDto = await query.Handle(claimsPrincipal, cancellation);
 
-                return Results.Ok(applicationUserDto);
-            }).RequireAuthorization();
+                    return Results.Ok(applicationUserDto);
+                }).RequireAuthorization();
 
             return endpoints;
         }
@@ -130,9 +165,24 @@ namespace EngineBay.Authentication
             return app;
         }
 
-        public IReadOnlyCollection<IModuleDbContext> GetRegisteredDbContexts(DbContextOptions<ModuleWriteDbContext> dbOptions)
+        public IReadOnlyCollection<IModuleDbContext> GetRegisteredDbContexts(
+            DbContextOptions<ModuleWriteDbContext> dbOptions)
         {
             return new IModuleDbContext[] { new AuthenticationDbContext(dbOptions) };
+        }
+
+        public override void SeedDatabase(string seedDataPath, IServiceProvider serviceProvider)
+        {
+            var permissionDtos = Array.ConvertAll(this.permissions, permission => new CreatePermissionDto(permission));
+            this.LoadSeedData<CreatePermissionDto, PermissionDto, CreatePermission>(permissionDtos, serviceProvider);
+
+            this.LoadSeedData<CreateGroupDto, GroupDto, CreateGroup>(seedDataPath, "*.groups.json", serviceProvider);
+            this.LoadSeedData<CreateOrUpdateRoleDto, RoleDto, CreateRole>(seedDataPath, "*.roles.json", serviceProvider);
+
+            this.LoadSeedData<ApplicationUser, AuthenticationWriteDbContext>(seedDataPath, "*.users.json", serviceProvider);
+            this.LoadSeedData<BasicAuthCredential, AuthenticationWriteDbContext>(seedDataPath, "*.basicauth.json", serviceProvider);
+
+            this.LoadSeedData<CreateAuthUserDto, AuthUserDto, CreateAuthUser>(seedDataPath, "*.authusers.json", serviceProvider);
         }
     }
 }

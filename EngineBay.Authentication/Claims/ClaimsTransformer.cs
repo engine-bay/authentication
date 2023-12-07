@@ -11,11 +11,16 @@ namespace EngineBay.Authentication
     {
         private readonly ILogger<ClaimsTransformer> logger;
         private readonly AuthenticationQueryDbContext authenticationQueryDbContext;
+        private readonly GetPermissionsByApplicationUserId getPermissionsByApplicationUserId;
 
-        public ClaimsTransformer(ILogger<ClaimsTransformer> logger, AuthenticationQueryDbContext authenticationQueryDbContext)
+        public ClaimsTransformer(
+            ILogger<ClaimsTransformer> logger,
+            AuthenticationQueryDbContext authenticationQueryDbContext,
+            GetPermissionsByApplicationUserId getPermissionsByApplicationUserId)
         {
             this.logger = logger;
             this.authenticationQueryDbContext = authenticationQueryDbContext;
+            this.getPermissionsByApplicationUserId = getPermissionsByApplicationUserId;
         }
 
         public async Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
@@ -27,7 +32,7 @@ namespace EngineBay.Authentication
             var transformed = new ClaimsPrincipal();
             transformed.AddIdentities(principal.Identities);
 
-            var claim = principal.FindFirst(x => x.Type == CustomClaimTypes.Name);
+            var nameClaim = principal.FindFirst(x => x.Type == CustomClaimTypes.Name);
 
             var username = string.Empty;
 
@@ -35,16 +40,19 @@ namespace EngineBay.Authentication
             {
                 username = principal.Identity.Name;
             }
-            else if (claim is not null)
+            else if (nameClaim is not null)
             {
-                username = claim.Value;
+                username = nameClaim.Value;
             }
             else
             {
+                // TODO: Discuss whether we want to return immediately, at least copy across remaining values, return the original, or throw an error
                 return transformed;
             }
 
-            var applicationUser = await this.authenticationQueryDbContext.ApplicationUsers.FirstOrDefaultAsync(x => x.Username == username);
+            var applicationUser =
+                await this.authenticationQueryDbContext.ApplicationUsers.SingleOrDefaultAsync(
+                    x => x.Username == username);
 
             if (applicationUser is null)
             {
@@ -52,24 +60,15 @@ namespace EngineBay.Authentication
                 return transformed;
             }
 
-#pragma warning disable CS8603,CS8604 // SQL will handle null references
-
-            var scopeClaims = this.authenticationQueryDbContext.Permissions
-                .Where(permission => permission.Groups
-                                                .SelectMany(group => group.Roles)
-                                                .SelectMany(role => role.Users)
-                                                .Select(user => user.ApplicationUserId)
-                                                .Contains(applicationUser.Id))
-                .Select(permission => new Claim(CustomClaimTypes.Scope, permission.Name))
-                .ToList();
-#pragma warning restore CS8603, CS8604
-
             var claims = new List<Claim>
             {
-                new Claim(CustomClaimTypes.Transformed, DateTime.Now.ToString(CultureInfo.InvariantCulture)),
-                new Claim(CustomClaimTypes.UserId, applicationUser.Id.ToString()),
+                new (CustomClaimTypes.Transformed, DateTime.Now.ToString(CultureInfo.InvariantCulture)),
+                new (CustomClaimTypes.UserId, applicationUser.Id.ToString()),
             };
-            claims.AddRange(scopeClaims);
+
+            var permissions = await this.getPermissionsByApplicationUserId.Handle(applicationUser.Id, CancellationToken.None);
+            claims.AddRange(permissions.Select(permission => new Claim(CustomClaimTypes.Scope, permission.Name)));
+
             transformed.AddIdentity(new ClaimsIdentity(claims));
             return transformed;
         }

@@ -22,12 +22,13 @@ namespace EngineBay.Authentication
         {
             ArgumentNullException.ThrowIfNull(createRoleDto);
 
-            this.validator.ValidateAndThrow(createRoleDto);
+            await this.validator.ValidateAndThrowAsync(createRoleDto, cancellation);
 
             List<Group>? groups = null;
-            if (createRoleDto.GroupIds != null)
+            if (createRoleDto.GroupIds != null || createRoleDto.GroupNames != null)
             {
-                groups = await this.authDb.Groups.Where(g => createRoleDto.GroupIds.Contains(g.Id)).ToListAsync(cancellation);
+                groups = await this.authDb.Groups.Where(g => (createRoleDto.GroupIds != null && createRoleDto.GroupIds.Contains(g.Id)) || (createRoleDto.GroupNames != null && createRoleDto.GroupNames.Contains(g.Name)))
+                    .ToListAsync(cancellation);
             }
 
             var role = new Role()
@@ -37,7 +38,8 @@ namespace EngineBay.Authentication
                 Groups = groups,
             };
 
-            var addedRole = await this.authDb.Roles.AddAsync(role, cancellation) ?? throw new PersistenceException("Failed to add the Role.");
+            var addedRole = await this.authDb.Roles.AddAsync(role, cancellation) ??
+                            throw new PersistenceException("Failed to add the Role.");
             await this.authDb.SaveChangesAsync(cancellation);
 
             return new RoleDto(addedRole.Entity);

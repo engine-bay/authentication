@@ -12,5 +12,7 @@ namespace EngineBay.Authentication
         public string? Description { get; set; }
 
         public ICollection<Guid>? PermissionIds { get; set; }
+
+        public ICollection<string>? PermissionNames { get; set; }
     }
 }

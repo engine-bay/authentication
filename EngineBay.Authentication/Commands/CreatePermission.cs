@@ -23,14 +23,15 @@ namespace EngineBay.Authentication
         {
             ArgumentNullException.ThrowIfNull(createPermissionDto);
 
-            this.validator.ValidateAndThrow(createPermissionDto);
+            await this.validator.ValidateAndThrowAsync(createPermissionDto, cancellation);
 
             var permission = new Permission()
             {
                 Name = createPermissionDto.Name,
             };
 
-            var addedPermission = await this.authDb.Permissions.AddAsync(permission, cancellation) ?? throw new PersistenceException("Failed to add permission.");
+            var addedPermission = await this.authDb.Permissions.AddAsync(permission, cancellation) ??
+                                  throw new PersistenceException("Failed to add permission.");
             await this.authDb.SaveChangesAsync(cancellation);
 
             return new PermissionDto(addedPermission.Entity);

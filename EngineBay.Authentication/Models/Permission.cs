@@ -27,6 +27,8 @@ namespace EngineBay.Authentication
 
             modelBuilder.Entity<Permission>().Property(x => x.Name).IsRequired();
 
+            modelBuilder.Entity<Permission>().HasIndex(x => x.Name).IsUnique();
+
             modelBuilder.Entity<Permission>().Property(x => x.CreatedAt).IsRequired();
 
             modelBuilder.Entity<Permission>().Property(x => x.LastUpdatedAt).IsRequired();

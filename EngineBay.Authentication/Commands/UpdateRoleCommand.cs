@@ -15,5 +15,7 @@ namespace EngineBay.Authentication
         public string? Description { get; set; }
 
         public ICollection<Guid>? GroupIds { get; set; }
+
+        public ICollection<string>? GroupNames { get; set; }
     }
 }
