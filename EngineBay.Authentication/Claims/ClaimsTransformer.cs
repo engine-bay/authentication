@@ -51,7 +51,7 @@ namespace EngineBay.Authentication
             }
 
             var applicationUser =
-                await this.authenticationQueryDbContext.ApplicationUsers.FirstOrDefaultAsync(
+                await this.authenticationQueryDbContext.ApplicationUsers.SingleOrDefaultAsync(
                     x => x.Username == username);
 
             if (applicationUser is null)

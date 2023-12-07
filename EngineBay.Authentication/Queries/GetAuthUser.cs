@@ -15,7 +15,7 @@ namespace EngineBay.Authentication
         public async Task<AuthUserDto> Handle(Guid query, CancellationToken cancellation)
         {
             var user = await this.authDb.AuthUsers.Include(authUser => authUser.Roles)
-                           .FirstOrDefaultAsync(authUser => authUser.Id == query, cancellation) ??
+                           .SingleOrDefaultAsync(authUser => authUser.Id == query, cancellation) ??
                        throw new NotFoundException($"No AuthUser with Id ${query} found.");
 
             return new AuthUserDto(user);
