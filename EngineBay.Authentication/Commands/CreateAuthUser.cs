@@ -22,12 +22,13 @@ namespace EngineBay.Authentication
         {
             ArgumentNullException.ThrowIfNull(createAuthUserDto);
 
-            this.validator.ValidateAndThrow(createAuthUserDto);
+            await this.validator.ValidateAndThrowAsync(createAuthUserDto, cancellation);
 
             List<Role>? roles = null;
             if (createAuthUserDto.RoleIds != null)
             {
-                roles = await this.authDb.Roles.Where(r => createAuthUserDto.RoleIds.Contains(r.Id)).ToListAsync(cancellation);
+                roles = await this.authDb.Roles.Where(r => createAuthUserDto.RoleIds.Contains(r.Id))
+                    .ToListAsync(cancellation);
             }
 
             var authUser = new AuthUser()
@@ -36,7 +37,8 @@ namespace EngineBay.Authentication
                 Roles = roles,
             };
 
-            var addedUser = await this.authDb.AuthUsers.AddAsync(authUser, cancellation) ?? throw new PersistenceException("Did not succesfully add auth user.");
+            var addedUser = await this.authDb.AuthUsers.AddAsync(authUser, cancellation) ??
+                            throw new PersistenceException("Did not succesfully add auth user.");
             await this.authDb.SaveChangesAsync(cancellation);
 
             return new AuthUserDto(addedUser.Entity);

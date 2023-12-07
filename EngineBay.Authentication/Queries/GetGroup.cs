@@ -14,12 +14,12 @@ namespace EngineBay.Authentication
 
         public async Task<GroupDto> Handle(Guid query, CancellationToken cancellation)
         {
-            var user = await this.authDb.Groups
-                           .Include(group => group.Roles)
-                           .FirstOrDefaultAsync(group => group.Id == query, cancellation) ??
-                       throw new NotFoundException($"No Group with Id ${query} found.");
+            var group = await this.authDb.Groups
+                            .Include(group => group.Permissions)
+                            .SingleOrDefaultAsync(group => group.Id == query, cancellation) ??
+                        throw new NotFoundException($"No Group with Id ${query} found.");
 
-            return new GroupDto(user);
+            return new GroupDto(group);
         }
     }
 }

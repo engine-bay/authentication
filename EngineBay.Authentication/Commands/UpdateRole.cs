@@ -21,12 +21,13 @@ namespace EngineBay.Authentication
         {
             ArgumentNullException.ThrowIfNull(updateRoleCommand);
 
-            this.validator.ValidateAndThrow(updateRoleCommand);
+            await this.validator.ValidateAndThrowAsync(updateRoleCommand, cancellation);
 
             List<Group>? groups = null;
-            if (updateRoleCommand.GroupIds != null)
+            if (updateRoleCommand.GroupIds != null || updateRoleCommand.GroupNames != null)
             {
-                groups = await this.authDb.Groups.Where(g => updateRoleCommand.GroupIds.Contains(g.Id)).ToListAsync(cancellation);
+                groups = await this.authDb.Groups.Where(g => (updateRoleCommand.GroupIds != null && updateRoleCommand.GroupIds.Contains(g.Id)) || (updateRoleCommand.GroupNames != null && updateRoleCommand.GroupNames.Contains(g.Name)))
+                    .ToListAsync(cancellation);
             }
 
             var role = await this.authDb.Roles.FindAsync(new object[] { updateRoleCommand.Id }, cancellationToken: cancellation) ?? throw new NotFoundException($"No Role with Id ${updateRoleCommand.Id} found.");

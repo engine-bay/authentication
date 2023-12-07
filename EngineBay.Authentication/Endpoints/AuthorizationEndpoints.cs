@@ -60,6 +60,7 @@ namespace EngineBay.Authentication
                         {
                             Description = createRoleDto.Description,
                             GroupIds = createRoleDto.GroupIds,
+                            GroupNames = createRoleDto.GroupNames,
                         };
                         var result = await handler.Handle(command, cancellation);
                         return Results.Ok(result);

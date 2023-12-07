@@ -46,6 +46,7 @@ namespace EngineBay.Authentication
             services.AddTransient<QueryGroups>();
             services.AddTransient<GetPermission>();
             services.AddTransient<QueryPermissions>();
+            services.AddTransient<GetPermissionsByApplicationUserId>();
 
             // Register validators
             services.AddTransient<IValidator<CreateAuthUserDto>, CreateAuthUserDtoValidator>();
@@ -85,7 +86,11 @@ namespace EngineBay.Authentication
             services.AddAuthorization(
                 options =>
                 {
-                    Array.ForEach(this.permissions, permission => options.AddPolicy(permission, policy => policy.RequireClaim(CustomClaimTypes.Scope, permission)));
+                    Array.ForEach(
+                        this.permissions,
+                        permission => options.AddPolicy(
+                            permission,
+                            policy => policy.RequireClaim(CustomClaimTypes.Scope, permission)));
                 });
 
             return services;
@@ -169,16 +174,16 @@ namespace EngineBay.Authentication
 
         public override void SeedDatabase(string seedDataPath, IServiceProvider serviceProvider)
         {
-            var permissions = Array.ConvertAll(this.permissions, permission => new CreatePermissionDto(permission));
+            var permissionDtos = Array.ConvertAll(this.permissions, permission => new CreatePermissionDto(permission));
 
-            this.LoadSeedData<CreatePermissionDto, PermissionDto, CreatePermission>(permissions, serviceProvider);
+            this.LoadSeedData<CreatePermissionDto, PermissionDto, CreatePermission>(permissionDtos, serviceProvider);
 
-            var groups = new CreateGroupDto[]
+            var groupDtos = new CreateGroupDto[]
             {
                 new CreateGroupDto("Modify")
                 {
                     Description = "Modify roles",
-                    PermissionNames = new string[]
+                    PermissionNames = new[]
                     {
                         PermissionConstants.CreateRoles, PermissionConstants.UpdateRoles,
                         PermissionConstants.DeleteRoles,
@@ -187,7 +192,7 @@ namespace EngineBay.Authentication
                 new CreateGroupDto("View")
                 {
                     Description = "View roles, groups, and permissions",
-                    PermissionNames = new string[]
+                    PermissionNames = new[]
                     {
                         PermissionConstants.QueryRoles, PermissionConstants.GetRoles,
                         PermissionConstants.QueryGroups, PermissionConstants.GetGroups,
@@ -196,7 +201,14 @@ namespace EngineBay.Authentication
                 },
             };
 
-            this.LoadSeedData<CreateGroupDto, GroupDto, CreateGroup>(groups, serviceProvider);
+            this.LoadSeedData<CreateGroupDto, GroupDto, CreateGroup>(groupDtos, serviceProvider);
+
+            var dbContext = serviceProvider.GetRequiredService<AuthenticationQueryDbContext>();
+            this.LoadSeedData<Role, Group, AuthenticationWriteDbContext>(seedDataPath, "*.roles.json", serviceProvider, "Groups", groupNames => dbContext.Groups.Where(group => groupNames.Contains(group.Name)));
+
+            this.LoadSeedData<ApplicationUser, AuthenticationWriteDbContext>(seedDataPath, "*.users.json", serviceProvider);
+            this.LoadSeedData<AuthUser, AuthenticationWriteDbContext>(seedDataPath, "*.authusers.json", serviceProvider);
+            this.LoadSeedData<BasicAuthCredential, AuthenticationWriteDbContext>(seedDataPath, "*.basicauth.json", serviceProvider);
         }
     }
 }

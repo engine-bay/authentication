@@ -22,7 +22,7 @@ namespace EngineBay.Authentication
         {
             ArgumentNullException.ThrowIfNull(createGroupDto);
 
-            this.validator.ValidateAndThrow(createGroupDto);
+            await this.validator.ValidateAndThrowAsync(createGroupDto, cancellation);
 
             List<Permission>? permissions = null;
             if (createGroupDto.PermissionNames != null)
