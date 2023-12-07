@@ -40,7 +40,7 @@
         <Otherwise>
             <ItemGroup>
                 <PackageReference Include="EngineBay.Core" Version="9.0.0" />
-                <PackageReference Include="EngineBay.Auditing" Version="1.0.3" />
+                <PackageReference Include="EngineBay.Auditing" Version="1.0.4" />
                 <PackageReference Include="EngineBay.Persistence" Version="6.0.3" />
             </ItemGroup>
         </Otherwise>
