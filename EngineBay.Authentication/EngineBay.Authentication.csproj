@@ -39,16 +39,16 @@
         </When>
         <Otherwise>
             <ItemGroup>
-                <PackageReference Include="EngineBay.Core" Version="9.0.1" />
-                <PackageReference Include="EngineBay.Auditing" Version="1.0.4" />
-                <PackageReference Include="EngineBay.Persistence" Version="6.0.3" />
+                <PackageReference Include="EngineBay.Core" Version="9.0.4" />
+                <PackageReference Include="EngineBay.Auditing" Version="1.0.7" />
+                <PackageReference Include="EngineBay.Persistence" Version="6.0.4" />
             </ItemGroup>
         </Otherwise>
     </Choose>
 
     <ItemGroup>
         <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.14" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
         <PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
