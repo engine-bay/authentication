@@ -2,7 +2,6 @@ namespace EngineBay.Authentication
 {
     using System.Security.Claims;
     using EngineBay.Core;
-    using EngineBay.Logging;
     using EngineBay.Persistence;
     using Microsoft.EntityFrameworkCore;
 
@@ -22,8 +21,6 @@ namespace EngineBay.Authentication
         {
             ArgumentNullException.ThrowIfNull(user);
             ArgumentNullException.ThrowIfNull(user.Identity);
-
-            var shouldLogSensitiveData = LoggingConfiguration.IsSensitiveDataLoggingEnabled();
 
             var claim = user.FindFirst(x => x.Type == CustomClaimTypes.Name);
 
@@ -46,15 +43,7 @@ namespace EngineBay.Authentication
 
             if (applicationUser is null)
             {
-                if (shouldLogSensitiveData)
-                {
-                    this.logger.UserDoesNotExist(username);
-                }
-                else
-                {
-                    this.logger.UserDoesNotExist();
-                }
-
+                this.logger.UserDoesNotExist(username);
                 throw new ArgumentException(nameof(applicationUser));
             }
 
