@@ -174,15 +174,15 @@ namespace EngineBay.Authentication
         public override void SeedDatabase(string seedDataPath, IServiceProvider serviceProvider)
         {
             var permissionDtos = Array.ConvertAll(this.permissions, permission => new CreatePermissionDto(permission));
-            this.LoadSeedData<CreatePermissionDto, PermissionDto, CreatePermission>(permissionDtos, serviceProvider);
+            DataBaseSeeder.LoadSeedData<CreatePermissionDto, PermissionDto, CreatePermission>(permissionDtos, serviceProvider);
 
-            this.LoadSeedData<CreateGroupDto, GroupDto, CreateGroup>(seedDataPath, "*.groups.json", serviceProvider);
-            this.LoadSeedData<CreateOrUpdateRoleDto, RoleDto, CreateRole>(seedDataPath, "*.roles.json", serviceProvider);
+            DataBaseSeeder.LoadSeedData<CreateGroupDto, GroupDto, CreateGroup>(seedDataPath, "*.groups.json", serviceProvider);
+            DataBaseSeeder.LoadSeedData<CreateOrUpdateRoleDto, RoleDto, CreateRole>(seedDataPath, "*.roles.json", serviceProvider);
 
-            this.LoadSeedData<ApplicationUser, AuthenticationWriteDbContext>(seedDataPath, "*.users.json", serviceProvider);
-            this.LoadSeedData<BasicAuthCredential, AuthenticationWriteDbContext>(seedDataPath, "*.basicauth.json", serviceProvider);
+            DataBaseSeeder.LoadSeedData<ApplicationUser, AuthenticationWriteDbContext>(seedDataPath, "*.users.json", serviceProvider);
+            DataBaseSeeder.LoadSeedData<BasicAuthCredential, AuthenticationWriteDbContext>(seedDataPath, "*.basicauth.json", serviceProvider);
 
-            this.LoadSeedData<CreateAuthUserDto, AuthUserDto, CreateAuthUser>(seedDataPath, "*.authusers.json", serviceProvider);
+            DataBaseSeeder.LoadSeedData<CreateAuthUserDto, AuthUserDto, CreateAuthUser>(seedDataPath, "*.authusers.json", serviceProvider);
         }
     }
 }

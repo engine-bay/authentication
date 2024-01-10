@@ -56,7 +56,7 @@ namespace EngineBay.Authentication
 
             if (applicationUser is null)
             {
-                this.logger.UserDoesNotExistPIISafe(username);
+                this.logger.UserDoesNotExist(username);
                 return transformed;
             }
 

@@ -1,6 +1,5 @@
 namespace EngineBay.Authentication
 {
-    using EngineBay.Auditing;
     using EngineBay.Persistence;
     using Microsoft.EntityFrameworkCore;
 
