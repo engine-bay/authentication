@@ -1,9 +1,9 @@
 namespace EngineBay.Authentication
 {
-    using System.IdentityModel.Tokens.Jwt;
     using System.Security.Cryptography;
     using System.Text;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.IdentityModel.JsonWebTokens;
     using Microsoft.IdentityModel.Tokens;
 
     public abstract class JwtBearerAuthenticationConfiguration
@@ -64,7 +64,8 @@ namespace EngineBay.Authentication
                     tokenValidationParameters.TryAllIssuerSigningKeys = false;
                     tokenValidationParameters.SignatureValidator = (token, parameters) =>
                     {
-                        var jwt = new JwtSecurityToken(token);
+                        // var jwt = new JwtSecurityToken(token);
+                        var jwt = new JsonWebToken(token);
 
                         return jwt;
                     };
