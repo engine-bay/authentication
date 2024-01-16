@@ -64,7 +64,6 @@ namespace EngineBay.Authentication
                     tokenValidationParameters.TryAllIssuerSigningKeys = false;
                     tokenValidationParameters.SignatureValidator = (token, parameters) =>
                     {
-                        // var jwt = new JwtSecurityToken(token);
                         var jwt = new JsonWebToken(token);
 
                         return jwt;
