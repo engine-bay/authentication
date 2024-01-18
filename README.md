@@ -16,13 +16,13 @@ Simple endpoints to register a user or get the current user are also provided.
 
 This module also provides implementations of [ICurrentIdentity](https://github.com/engine-bay/core/blob/main/EngineBay.Core/Interfaces/ICurrentIdentity.cs), which can be used by modules such as [EngineBay.Auditing](https://github.com/engine-bay/auditing), to get information about the current user from the HttpContext.
 
-**Not implemented yet**: _With the authorization middleware, you can specify authorization policies on endpoints to limit access to users with the appropriate permissions._
+ _With the authorization middleware, you can specify authorization policies on endpoints to limit access to users with the appropriate permissions._
 
 ## Usage
 
 When this module is registered and configured, all endpoints will only allow authenticated users by default. To allow unauthenticated users to access an endpoint, you can use the `.AllowAnonymous()` method on the route builder. For an example, see [AuthenticationModule](EngineBay.Authentication/AuthenticationModule.cs).
 
-**Not implemented yet**: _To restrict access to endpoints to users with specific permissions, you can use `.RequireAuthorization("Policy.Name")` on the route builder. For an example, see [AuditEntryEndpoint](https://github.com/engine-bay/auditing/blob/main/EngineBay.Auditing/AuditEntry/AuditEntryEndpoints.cs)._
+ _To restrict access to endpoints to users with specific permissions, you can use `.RequireAuthorization("Policy.Name")` on the route builder. For an example, see [AuditEntryEndpoint](https://github.com/engine-bay/auditing/blob/main/EngineBay.Auditing/AuditEntry/AuditEntryEndpoints.cs)._
 
 ### Registration
 
