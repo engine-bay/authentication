@@ -2,9 +2,9 @@
 {
     using FluentValidation;
 
-    public class CreateAuthUserDtoValidator : AbstractValidator<CreateAuthUserDto>
+    public class CreateUserRoleDtoValidator : AbstractValidator<CreateUserRoleDto>
     {
-        public CreateAuthUserDtoValidator()
+        public CreateUserRoleDtoValidator()
         {
             this.RuleFor(x => x.UserId).NotNull().NotEmpty();
         }

@@ -3,23 +3,23 @@ namespace EngineBay.Authentication
     using System;
     using EngineBay.Persistence;
 
-    public class AuthUserDto
+    public class UserRoleDto
     {
-        public AuthUserDto(AuthUser authUser)
+        public UserRoleDto(UserRole userRole)
         {
-            ArgumentNullException.ThrowIfNull(authUser);
+            ArgumentNullException.ThrowIfNull(userRole);
 
-            this.Id = authUser.Id;
-            this.ApplicationUserId = authUser.ApplicationUserId;
+            this.Id = userRole.Id;
+            this.ApplicationUserId = userRole.ApplicationUserId;
 
-            if (authUser.ApplicationUser != null)
+            if (userRole.ApplicationUser != null)
             {
-                this.ApplicationUserDto = new ApplicationUserDto(authUser.ApplicationUser);
+                this.ApplicationUserDto = new ApplicationUserDto(userRole.ApplicationUser);
             }
 
-            if (authUser.Roles != null)
+            if (userRole.Roles != null)
             {
-                this.Roles = authUser.Roles
+                this.Roles = userRole.Roles
                     .Select(x => new RoleDto(x))
                     .ToList();
             }
