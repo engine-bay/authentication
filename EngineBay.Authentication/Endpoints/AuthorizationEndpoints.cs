@@ -26,7 +26,7 @@ namespace EngineBay.Authentication
                         return Results.Ok(paginatedDtos);
                     })
                 .WithTags(ApiGroupNameConstants.Role)
-                .RequireAuthorization(PermissionConstants.QueryRoles);
+                .RequireAuthorization(ModuleClaims.QueryRoles);
 
             endpoints.MapGet(
                     RoleBasePath + "/{id:guid}",
@@ -36,7 +36,7 @@ namespace EngineBay.Authentication
                         return Results.Ok(result);
                     })
                 .WithTags(ApiGroupNameConstants.Role)
-                .RequireAuthorization(PermissionConstants.GetRoles);
+                .RequireAuthorization(ModuleClaims.GetRoles);
 
             endpoints.MapPost(
                     RoleBasePath,
@@ -46,7 +46,7 @@ namespace EngineBay.Authentication
                         return Results.Ok(result);
                     })
                 .WithTags(ApiGroupNameConstants.Role)
-                .RequireAuthorization(PermissionConstants.CreateRoles);
+                .RequireAuthorization(ModuleClaims.CreateRoles);
 
             endpoints.MapPut(
                     RoleBasePath + "/{id:guid}",
@@ -66,7 +66,7 @@ namespace EngineBay.Authentication
                         return Results.Ok(result);
                     })
                 .WithTags(ApiGroupNameConstants.Role)
-                .RequireAuthorization(PermissionConstants.UpdateRoles);
+                .RequireAuthorization(ModuleClaims.UpdateRoles);
 
             endpoints.MapDelete(
                     RoleBasePath + "/{id:guid}",
@@ -76,7 +76,7 @@ namespace EngineBay.Authentication
                         return Results.Ok(result);
                     })
                 .WithTags(ApiGroupNameConstants.Role)
-                .RequireAuthorization(PermissionConstants.DeleteRoles);
+                .RequireAuthorization(ModuleClaims.DeleteRoles);
 
             endpoints.MapGet(
                     GroupBasePath,
@@ -94,7 +94,7 @@ namespace EngineBay.Authentication
                         return Results.Ok(paginatedDtos);
                     })
                 .WithTags(ApiGroupNameConstants.Group)
-                .RequireAuthorization(PermissionConstants.QueryGroups);
+                .RequireAuthorization(ModuleClaims.QueryGroups);
 
             endpoints.MapGet(
                     GroupBasePath + "/{id:guid}",
@@ -104,7 +104,7 @@ namespace EngineBay.Authentication
                         return Results.Ok(result);
                     })
                 .WithTags(ApiGroupNameConstants.Group)
-                .RequireAuthorization(PermissionConstants.GetGroups);
+                .RequireAuthorization(ModuleClaims.GetGroups);
 
             endpoints.MapGet(
                     PermissionBasePath,
@@ -122,7 +122,7 @@ namespace EngineBay.Authentication
                         return Results.Ok(paginatedDtos);
                     })
                 .WithTags(ApiGroupNameConstants.Permission)
-                .RequireAuthorization(PermissionConstants.QueryPermissions);
+                .RequireAuthorization(ModuleClaims.QueryPermissions);
 
             endpoints.MapGet(
                     PermissionBasePath + "/{id:guid}",
@@ -132,7 +132,7 @@ namespace EngineBay.Authentication
                         return Results.Ok(result);
                     })
                 .WithTags(ApiGroupNameConstants.Permission)
-                .RequireAuthorization(PermissionConstants.GetPermissions);
+                .RequireAuthorization(ModuleClaims.GetPermissions);
         }
     }
 }

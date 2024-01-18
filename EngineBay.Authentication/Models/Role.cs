@@ -15,7 +15,7 @@ namespace EngineBay.Authentication
 
         public string? Description { get; set; }
 
-        public virtual ICollection<AuthUser>? Users { get; set; }
+        public virtual ICollection<UserRole>? Users { get; set; }
 
         public virtual ICollection<Group>? Groups { get; set; }
 

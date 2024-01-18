@@ -12,7 +12,7 @@ namespace EngineBay.Authentication
 
         public DbSet<BasicAuthCredential> BasicAuthCredentials { get; set; } = null!;
 
-        public DbSet<AuthUser> AuthUsers { get; set; } = null!;
+        public DbSet<UserRole> UserRoles { get; set; } = null!;
 
         public DbSet<Role> Roles { get; set; } = null!;
 
@@ -24,7 +24,7 @@ namespace EngineBay.Authentication
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             BasicAuthCredential.CreateDataAnnotations(modelBuilder);
-            AuthUser.CreateDataAnnotations(modelBuilder);
+            UserRole.CreateDataAnnotations(modelBuilder);
             Role.CreateDataAnnotations(modelBuilder);
             Group.CreateDataAnnotations(modelBuilder);
             Permission.CreateDataAnnotations(modelBuilder);

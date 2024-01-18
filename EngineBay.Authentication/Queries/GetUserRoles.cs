@@ -3,22 +3,22 @@ namespace EngineBay.Authentication
     using EngineBay.Core;
     using Microsoft.EntityFrameworkCore;
 
-    public class GetAuthUser : IQueryHandler<Guid, AuthUserDto>
+    public class GetUserRoles : IQueryHandler<Guid, UserRoleDto>
     {
         private readonly AuthenticationDbContext authDb;
 
-        public GetAuthUser(AuthenticationDbContext authDb)
+        public GetUserRoles(AuthenticationDbContext authDb)
         {
             this.authDb = authDb;
         }
 
-        public async Task<AuthUserDto> Handle(Guid query, CancellationToken cancellation)
+        public async Task<UserRoleDto> Handle(Guid query, CancellationToken cancellation)
         {
-            var user = await this.authDb.AuthUsers.Include(authUser => authUser.Roles)
+            var user = await this.authDb.UserRoles.Include(authUser => authUser.Roles)
                            .SingleOrDefaultAsync(authUser => authUser.Id == query, cancellation) ??
                        throw new NotFoundException($"No AuthUser with Id ${query} found.");
 
-            return new AuthUserDto(user);
+            return new UserRoleDto(user);
         }
     }
 }

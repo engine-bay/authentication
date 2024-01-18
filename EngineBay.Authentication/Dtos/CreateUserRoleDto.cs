@@ -1,8 +1,8 @@
 namespace EngineBay.Authentication
 {
-    public class CreateAuthUserDto
+    public class CreateUserRoleDto
     {
-        public CreateAuthUserDto(Guid userId)
+        public CreateUserRoleDto(Guid userId)
         {
             this.UserId = userId;
         }

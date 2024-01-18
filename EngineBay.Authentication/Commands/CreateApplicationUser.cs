@@ -4,12 +4,12 @@ namespace EngineBay.Authentication
     using EngineBay.Persistence;
     using Microsoft.EntityFrameworkCore;
 
-    public class CreateUser : ICommandHandler<CreateUserDto, ApplicationUserDto>
+    public class CreateApplicationUser : ICommandHandler<CreateUserDto, ApplicationUserDto>
     {
-        private readonly ILogger<CreateBasicAuthUser> logger;
+        private readonly ILogger<CreateApplicationUser> logger;
         private readonly AuthenticationWriteDbContext authenticationWriteDbContext;
 
-        public CreateUser(ILogger<CreateBasicAuthUser> logger, AuthenticationWriteDbContext authenticationWriteDbContext)
+        public CreateApplicationUser(ILogger<CreateApplicationUser> logger, AuthenticationWriteDbContext authenticationWriteDbContext)
         {
             this.logger = logger;
             this.authenticationWriteDbContext = authenticationWriteDbContext;

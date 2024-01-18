@@ -12,34 +12,44 @@ namespace EngineBay.Authentication
     {
         private readonly string[] permissions =
         {
-            PermissionConstants.QueryRoles,
-            PermissionConstants.GetRoles,
-            PermissionConstants.CreateRoles,
-            PermissionConstants.UpdateRoles,
-            PermissionConstants.DeleteRoles,
-            PermissionConstants.QueryGroups,
-            PermissionConstants.GetGroups,
-            PermissionConstants.QueryPermissions,
-            PermissionConstants.GetPermissions,
+            ModuleClaims.QueryRoles,
+            ModuleClaims.GetRoles,
+            ModuleClaims.CreateRoles,
+            ModuleClaims.UpdateRoles,
+            ModuleClaims.DeleteRoles,
+            ModuleClaims.QueryGroups,
+            ModuleClaims.GetGroups,
+            ModuleClaims.QueryPermissions,
+            ModuleClaims.GetPermissions,
         };
+
+        public override IServiceCollection RegisterPolicies(IServiceCollection services)
+        {
+            foreach (var permission in this.permissions)
+            {
+                services.AddAuthorizationBuilder().AddPolicy(permission, policy =>
+                    policy.RequireClaim(CustomClaimTypes.Scope, permission));
+            }
+
+            return base.RegisterPolicies(services);
+        }
 
         public override IServiceCollection RegisterModule(IServiceCollection services, IConfiguration configuration)
         {
-            // Register commands
-            services.AddTransient<CreateUser>();
-            services.AddTransient<CreateBasicAuthUser>();
-            services.AddTransient<CreateAuthUser>();
+            var authenticationType = AuthenticationConfiguration.GetAuthenticationMethod();
+
+            // Application User
+            services.AddTransient<CreateApplicationUser>();
+            services.AddTransient<GetApplicationUser>();
+
+            // Authorization
+            services.AddTransient<CreateUserRole>();
             services.AddTransient<CreateRole>();
             services.AddTransient<UpdateRole>();
             services.AddTransient<DeleteRole>();
             services.AddTransient<CreateGroup>();
             services.AddTransient<CreatePermission>();
-
-            // Register queries
-            services.AddTransient<GetApplicationUser>();
-            services.AddTransient<GetCurrentUser>();
-            services.AddTransient<VerifyBasicAuthCredentials>();
-            services.AddTransient<GetAuthUser>();
+            services.AddTransient<GetUserRoles>();
             services.AddTransient<GetRole>();
             services.AddTransient<QueryRoles>();
             services.AddTransient<GetGroup>();
@@ -47,17 +57,15 @@ namespace EngineBay.Authentication
             services.AddTransient<GetPermission>();
             services.AddTransient<QueryPermissions>();
             services.AddTransient<GetPermissionsByApplicationUserId>();
-
-            // Register validators
-            services.AddTransient<IValidator<CreateAuthUserDto>, CreateAuthUserDtoValidator>();
+            services.AddTransient<IValidator<CreateUserRoleDto>, CreateUserRoleDtoValidator>();
             services.AddTransient<IValidator<CreateOrUpdateRoleDto>, CreateRoleDtoValidator>();
             services.AddTransient<IValidator<UpdateRoleCommand>, UpdateRoleCommandValidator>();
             services.AddTransient<IValidator<CreateGroupDto>, CreateGroupDtoValidator>();
             services.AddTransient<IValidator<CreatePermissionDto>, CreatePermissionDtoValidator>();
 
+            // Authentication
+            services.AddTransient<GetCurrentUser>();
             services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
-
-            var authenticationType = AuthenticationConfiguration.GetAuthenticationMethod();
 
             switch (authenticationType)
             {
@@ -66,6 +74,8 @@ namespace EngineBay.Authentication
                     break;
                 case AuthenticationTypes.Basic:
                     Console.WriteLine("Warning: Basic authentication has been configured. The system is insecure.");
+                    services.AddTransient<CreateBasicAuthUser>();
+                    services.AddTransient<VerifyBasicAuthCredentials>();
                     BasicAuthenticationConfiguration.Configure(services);
                     break;
                 default:
@@ -80,17 +90,6 @@ namespace EngineBay.Authentication
                 new CQRSDatabaseConfiguration<AuthenticationDbContext, AuthenticationQueryDbContext,
                     AuthenticationWriteDbContext>();
             databaseConfiguration.RegisterDatabases(services);
-
-            // Register authz policies
-            services.AddAuthorization(
-                options =>
-                {
-                    Array.ForEach(
-                        this.permissions,
-                        permission => options.AddPolicy(
-                            permission,
-                            policy => policy.RequireClaim(CustomClaimTypes.Scope, permission)));
-                });
 
             return services;
         }
@@ -107,7 +106,7 @@ namespace EngineBay.Authentication
                 case AuthenticationTypes.JwtBearer:
                     endpoints.MapPost(
                         "/register",
-                        async (CreateUserDto createUserDto, CreateUser command, CancellationToken cancellation) =>
+                        async (CreateUserDto createUserDto, CreateApplicationUser command, CancellationToken cancellation) =>
                         {
                             var applicationUserDto = await command.Handle(createUserDto, cancellation);
 
@@ -182,7 +181,7 @@ namespace EngineBay.Authentication
             DataBaseSeeder.LoadSeedData<ApplicationUser, AuthenticationWriteDbContext>(seedDataPath, "*.users.json", serviceProvider);
             DataBaseSeeder.LoadSeedData<BasicAuthCredential, AuthenticationWriteDbContext>(seedDataPath, "*.basicauth.json", serviceProvider);
 
-            DataBaseSeeder.LoadSeedData<CreateAuthUserDto, AuthUserDto, CreateAuthUser>(seedDataPath, "*.authusers.json", serviceProvider);
+            DataBaseSeeder.LoadSeedData<CreateUserRoleDto, UserRoleDto, CreateUserRole>(seedDataPath, "*.authusers.json", serviceProvider);
         }
     }
 }
