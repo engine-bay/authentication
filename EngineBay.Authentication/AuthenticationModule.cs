@@ -2,6 +2,7 @@ namespace EngineBay.Authentication
 {
     using System.Collections.Generic;
     using System.Security.Claims;
+    using EngineBay.Authentication.Cookies;
     using EngineBay.Core;
     using EngineBay.Persistence;
     using FluentValidation;
@@ -38,9 +39,11 @@ namespace EngineBay.Authentication
         {
             var authenticationType = AuthenticationConfiguration.GetAuthenticationMethod();
 
-            // Application User
+            // Identity
             services.AddTransient<CreateApplicationUser>();
             services.AddTransient<GetApplicationUser>();
+            services.AddTransient<GetCurrentUser>();
+            services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
 
             // Authorization
             services.AddTransient<CreateUserRole>();
@@ -64,9 +67,6 @@ namespace EngineBay.Authentication
             services.AddTransient<IValidator<CreatePermissionDto>, CreatePermissionDtoValidator>();
 
             // Authentication
-            services.AddTransient<GetCurrentUser>();
-            services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
-
             switch (authenticationType)
             {
                 case AuthenticationTypes.JwtBearer:
@@ -77,6 +77,14 @@ namespace EngineBay.Authentication
                     services.AddTransient<CreateBasicAuthUser>();
                     services.AddTransient<VerifyBasicAuthCredentials>();
                     BasicAuthenticationConfiguration.Configure(services);
+                    break;
+                case AuthenticationTypes.Cookies:
+                    services.AddTransient<GetPermissionsByApplicationUserId>();
+                    services.AddTransient<IValidator<SignInCredentials>, SignInCredentialsValidator>();
+                    services.AddTransient<SignIn>();
+                    services.AddTransient<CreateBasicAuthUser>();
+                    services.AddTransient<VerifyBasicAuthCredentials>();
+                    CookieAuthenticationConfiguration.Configure(services);
                     break;
                 default:
                     Console.WriteLine("Warning: no authentication has been configured. The system is insecure.");
@@ -115,6 +123,21 @@ namespace EngineBay.Authentication
 
                     break;
                 case AuthenticationTypes.Basic:
+                    endpoints.MapPost(
+                        "/register",
+                        async (
+                            CreateBasicAuthUserDto createBasicAuthUserDto,
+                            CreateBasicAuthUser command,
+                            CancellationToken cancellation) =>
+                        {
+                            var applicationUserDto = await command.Handle(createBasicAuthUserDto, cancellation);
+
+                            return Results.Ok(applicationUserDto);
+                        }).AllowAnonymous();
+
+                    break;
+                case AuthenticationTypes.Cookies:
+                    CookieAuthEndpoints.MapEndpoints(endpoints);
                     endpoints.MapPost(
                         "/register",
                         async (
