@@ -5,5 +5,6 @@ namespace EngineBay.Authentication
         None,
         Basic,
         JwtBearer,
+        Cookies,
     }
 }
