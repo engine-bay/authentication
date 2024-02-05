@@ -25,20 +25,22 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <IsTrimmable>false</IsTrimmable>
+		<NoWarn>NU5104</NoWarn>
     </PropertyGroup>
 
     <Choose>
         <When Condition="'$(ASPNETCORE_ENVIRONMENT)' == 'Development'">
             <ItemGroup>
                 <ProjectReference Include="../../core/EngineBay.Core/EngineBay.Core.csproj" />
-                <ProjectReference
-                    Include="../../persistence/EngineBay.Persistence/EngineBay.Persistence.csproj" />
+                <ProjectReference Include="../../persistence/EngineBay.Persistence/EngineBay.Persistence.csproj" />
+				<ProjectReference Include="../../telemetry/EngineBay.Telemetry/EngineBay.Telemetry.csproj" />
             </ItemGroup>
         </When>
         <Otherwise>
             <ItemGroup>
                 <PackageReference Include="EngineBay.Core" Version="*" />
                 <PackageReference Include="EngineBay.Persistence" Version="*" />
+				<PackageReference Include="EngineBay.Telemetry" Version="*" />
             </ItemGroup>
         </Otherwise>
     </Choose>
@@ -56,5 +58,9 @@
     <ItemGroup>
         <None Include="../README.md" Pack="true" PackagePath="\" />
         <None Include="../LICENSE.txt" Pack="true" PackagePath="" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\demo-module\EngineBay.DemoModule\EngineBay.DemoModule.csproj" />
     </ItemGroup>
 </Project>

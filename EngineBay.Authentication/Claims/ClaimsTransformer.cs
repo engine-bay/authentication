@@ -4,6 +4,7 @@ namespace EngineBay.Authentication
     using System.Globalization;
     using System.Security.Claims;
     using System.Threading.Tasks;
+    using EngineBay.Telemetry;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.EntityFrameworkCore;
 
@@ -25,6 +26,8 @@ namespace EngineBay.Authentication
 
         public async Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)
         {
+            using var activity = EngineBayActivitySource.Source.StartActivity("Transformer:" + "Authentication.Claims");
+
             ArgumentNullException.ThrowIfNull(principal);
             ArgumentNullException.ThrowIfNull(principal.Identity);
 

@@ -1,6 +1,8 @@
 namespace EngineBay.Authentication
 {
     using EngineBay.Core;
+    using EngineBay.DemoModule;
+    using EngineBay.Telemetry;
 
     public static class AuthorizationEndpoints
     {
@@ -20,6 +22,7 @@ namespace EngineBay.Authentication
                         SortOrderType? sortOrder,
                         CancellationToken cancellation) =>
                     {
+                        using var activity = EngineBayActivitySource.Source.StartActivity(TracingActivityNameConstants.Endpoint + AuthActivityNameConstants.RolesQuery);
                         var paginationParameters = new PaginationParameters(skip, limit, sortBy, sortOrder);
 
                         var paginatedDtos = await handler.Handle(paginationParameters, cancellation);

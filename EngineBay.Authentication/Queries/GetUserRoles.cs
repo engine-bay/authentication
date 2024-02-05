@@ -1,6 +1,8 @@
 namespace EngineBay.Authentication
 {
     using EngineBay.Core;
+    using EngineBay.DemoModule;
+    using EngineBay.Telemetry;
     using Microsoft.EntityFrameworkCore;
 
     public class GetUserRoles : IQueryHandler<Guid, UserRoleDto>
@@ -14,6 +16,8 @@ namespace EngineBay.Authentication
 
         public async Task<UserRoleDto> Handle(Guid query, CancellationToken cancellation)
         {
+            using var activity = EngineBayActivitySource.Source.StartActivity(TracingActivityNameConstants.Handler + AuthActivityNameConstants.UserRoleGet);
+
             var user = await this.authDb.UserRoles.Include(authUser => authUser.Roles)
                            .SingleOrDefaultAsync(authUser => authUser.Id == query, cancellation) ??
                        throw new NotFoundException($"No AuthUser with Id ${query} found.");

@@ -2,6 +2,8 @@ namespace EngineBay.Authentication
 {
     using BCrypt.Net;
     using EngineBay.Core;
+    using EngineBay.DemoModule;
+    using EngineBay.Telemetry;
     using Microsoft.EntityFrameworkCore;
 
     public class VerifyBasicAuthCredentials : IQueryHandler<BasicAuthCredentialsDto, bool>
@@ -23,6 +25,8 @@ namespace EngineBay.Authentication
         /// <inheritdoc/>
         public async Task<bool> Handle(BasicAuthCredentialsDto credentialsDto, CancellationToken cancellation)
         {
+            using var activity = EngineBayActivitySource.Source.StartActivity(TracingActivityNameConstants.Handler + AuthActivityNameConstants.CredentialsVerifyBasic);
+
             ArgumentNullException.ThrowIfNull(credentialsDto);
 
             var claimsPrincipal = credentialsDto.ClaimsPrincipal;

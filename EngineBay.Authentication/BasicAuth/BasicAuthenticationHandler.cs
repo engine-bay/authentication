@@ -3,28 +3,29 @@ namespace EngineBay.Authentication
     using System.Security.Claims;
     using System.Text;
     using System.Text.Encodings.Web;
+    using EngineBay.DemoModule;
+    using EngineBay.Telemetry;
     using Microsoft.AspNetCore.Authentication;
     using Microsoft.Extensions.Options;
 
     public class BasicAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
-        private readonly AuthenticationDbContext authenticationDbContext;
         private readonly VerifyBasicAuthCredentials verifyBasicAuthCredentials;
 
         public BasicAuthenticationHandler(
             IOptionsMonitor<AuthenticationSchemeOptions> options,
             ILoggerFactory logger,
             UrlEncoder encoder,
-            AuthenticationDbContext authenticationDbContext,
             VerifyBasicAuthCredentials verifyBasicAuthCredentials)
             : base(options, logger, encoder)
         {
-            this.authenticationDbContext = authenticationDbContext;
             this.verifyBasicAuthCredentials = verifyBasicAuthCredentials;
         }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
+            using var activity = EngineBayActivitySource.Source.StartActivity(TracingActivityNameConstants.Handler + AuthActivityNameConstants.AuthBasic);
+
             var authHeader = this.Request.Headers["Authorization"].ToString();
             if (authHeader != null && authHeader.StartsWith("basic", StringComparison.OrdinalIgnoreCase))
             {

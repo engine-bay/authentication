@@ -2,7 +2,9 @@ namespace EngineBay.Authentication
 {
     using System.Security.Claims;
     using EngineBay.Core;
+    using EngineBay.DemoModule;
     using EngineBay.Persistence;
+    using EngineBay.Telemetry;
     using Microsoft.EntityFrameworkCore;
 
     public class GetApplicationUser : IQueryHandler<ClaimsPrincipal, ApplicationUser>
@@ -19,6 +21,8 @@ namespace EngineBay.Authentication
         /// <inheritdoc/>
         public async Task<ApplicationUser> Handle(ClaimsPrincipal user, CancellationToken cancellation)
         {
+            using var activity = EngineBayActivitySource.Source.StartActivity(TracingActivityNameConstants.Handler + AuthActivityNameConstants.ApplicationUserGet);
+
             ArgumentNullException.ThrowIfNull(user);
             ArgumentNullException.ThrowIfNull(user.Identity);
 
