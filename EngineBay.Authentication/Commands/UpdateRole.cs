@@ -6,11 +6,11 @@ namespace EngineBay.Authentication
 
     public class UpdateRole : ICommandHandler<UpdateRoleCommand, RoleDto>
     {
-        private readonly AuthenticationDbContext authDb;
+        private readonly AuthorizationWriteDbContext authDb;
         private readonly IValidator<UpdateRoleCommand> validator;
 
         public UpdateRole(
-            AuthenticationDbContext authDb,
+            AuthorizationWriteDbContext authDb,
             IValidator<UpdateRoleCommand> validator)
         {
             this.authDb = authDb;

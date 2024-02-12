@@ -6,9 +6,9 @@ namespace EngineBay.Authentication
     public class GetPermission : IQueryHandler<Guid, PermissionDto>
 #pragma warning restore CA1711 // Identifiers should not have incorrect suffix
     {
-        private readonly AuthenticationDbContext authDb;
+        private readonly AuthorizationQueryDbContext authDb;
 
-        public GetPermission(AuthenticationDbContext authDb)
+        public GetPermission(AuthorizationQueryDbContext authDb)
         {
             this.authDb = authDb;
         }

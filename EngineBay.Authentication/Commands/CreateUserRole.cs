@@ -7,11 +7,11 @@ namespace EngineBay.Authentication
 
     public class CreateUserRole : ICommandHandler<CreateUserRoleDto, UserRoleDto>
     {
-        private readonly AuthenticationDbContext authDb;
+        private readonly AuthorizationWriteDbContext authDb;
         private readonly IValidator<CreateUserRoleDto> validator;
 
         public CreateUserRole(
-            AuthenticationDbContext authDb,
+            AuthorizationWriteDbContext authDb,
             IValidator<CreateUserRoleDto> validator)
         {
             this.authDb = authDb;

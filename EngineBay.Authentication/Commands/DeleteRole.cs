@@ -4,9 +4,9 @@ namespace EngineBay.Authentication
 
     public class DeleteRole : ICommandHandler<Guid, RoleDto>
     {
-        private readonly AuthenticationDbContext authDb;
+        private readonly AuthorizationWriteDbContext authDb;
 
-        public DeleteRole(AuthenticationDbContext authDb)
+        public DeleteRole(AuthorizationWriteDbContext authDb)
         {
             this.authDb = authDb;
         }

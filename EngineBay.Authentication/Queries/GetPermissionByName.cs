@@ -5,9 +5,9 @@ namespace EngineBay.Authentication
 
     public class GetPermissionByName : IQueryHandler<string, PermissionDto>
     {
-        private readonly AuthenticationDbContext authDb;
+        private readonly AuthorizationQueryDbContext authDb;
 
-        public GetPermissionByName(AuthenticationDbContext authDb)
+        public GetPermissionByName(AuthorizationQueryDbContext authDb)
         {
             this.authDb = authDb;
         }

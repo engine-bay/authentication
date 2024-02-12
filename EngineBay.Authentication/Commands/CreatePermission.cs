@@ -8,11 +8,11 @@ namespace EngineBay.Authentication
     public class CreatePermission : ICommandHandler<CreatePermissionDto, PermissionDto>
 #pragma warning restore CA1711 // Identifiers should not have incorrect suffix
     {
-        private readonly AuthenticationDbContext authDb;
+        private readonly AuthorizationWriteDbContext authDb;
         private readonly IValidator<CreatePermissionDto> validator;
 
         public CreatePermission(
-            AuthenticationDbContext authDb,
+            AuthorizationWriteDbContext authDb,
             IValidator<CreatePermissionDto> validator)
         {
             this.authDb = authDb;

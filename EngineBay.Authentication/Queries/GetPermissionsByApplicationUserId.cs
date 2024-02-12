@@ -5,9 +5,9 @@ namespace EngineBay.Authentication
 
     public class GetPermissionsByApplicationUserId : IQueryHandler<Guid, IEnumerable<PermissionDto>>
     {
-        private readonly AuthenticationDbContext authDb;
+        private readonly AuthorizationQueryDbContext authDb;
 
-        public GetPermissionsByApplicationUserId(AuthenticationDbContext authDb)
+        public GetPermissionsByApplicationUserId(AuthorizationQueryDbContext authDb)
         {
             this.authDb = authDb;
         }

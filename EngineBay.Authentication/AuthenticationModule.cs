@@ -23,6 +23,13 @@ namespace EngineBay.Authentication
             ModuleClaims.GetPermissions,
         };
 
+        public AuthenticationModule()
+        {
+            this.AuthenticationType = AuthenticationConfiguration.GetAuthenticationMethod();
+        }
+
+        public AuthenticationTypes AuthenticationType { get; init; }
+
         public override IServiceCollection RegisterPolicies(IServiceCollection services)
         {
             foreach (var permission in this.permissions)
@@ -36,15 +43,27 @@ namespace EngineBay.Authentication
 
         public override IServiceCollection RegisterModule(IServiceCollection services, IConfiguration configuration)
         {
-            var authenticationType = AuthenticationConfiguration.GetAuthenticationMethod();
+            services.AddScoped<ICurrentIdentity, CurrentIdentity>();
 
-            // Identity
+            // Application User
             services.AddTransient<CreateApplicationUser>();
             services.AddTransient<GetApplicationUser>();
-            services.AddTransient<GetCurrentUser>();
             services.AddTransient<IClaimsTransformation, ClaimsTransformer>();
+            services.AddTransient<GetCurrentUser>();
+
+            // Identity
+
+            // Custom Identity
+            services.AddTransient<CreateBasicAuthUser>();
+            services.AddTransient<VerifyBasicAuthCredentials>();
+            var authenticationDbConfiguration =
+                new CQRSDatabaseConfiguration<AuthenticationDbContext, AuthenticationQueryDbContext,
+                    AuthenticationWriteDbContext>();
+            authenticationDbConfiguration.RegisterDatabases(services);
 
             // Authorization
+
+            // Custom Authorization
             services.AddTransient<CreateUserRole>();
             services.AddTransient<CreateRole>();
             services.AddTransient<UpdateRole>();
@@ -65,38 +84,31 @@ namespace EngineBay.Authentication
             services.AddTransient<IValidator<CreateGroupDto>, CreateGroupDtoValidator>();
             services.AddTransient<IValidator<CreatePermissionDto>, CreatePermissionDtoValidator>();
 
-            // Authentication
-            switch (authenticationType)
+            var authorizationDbConfiguration =
+                new CQRSDatabaseConfiguration<AuthorizationDbContext, AuthorizationQueryDbContext,
+                    AuthorizationWriteDbContext>();
+            authorizationDbConfiguration.RegisterDatabases(services);
+
+            // JWT Bearer
+            if (this.AuthenticationType == AuthenticationTypes.JwtBearer)
             {
-                case AuthenticationTypes.JwtBearer:
-                    JwtBearerAuthenticationConfiguration.Configure(services);
-                    break;
-                case AuthenticationTypes.Basic:
-                    Console.WriteLine("Warning: Basic authentication has been configured. The system is insecure.");
-                    services.AddTransient<CreateBasicAuthUser>();
-                    services.AddTransient<VerifyBasicAuthCredentials>();
-                    BasicAuthenticationConfiguration.Configure(services);
-                    break;
-                case AuthenticationTypes.Cookies:
-                    services.AddTransient<GetPermissionsByApplicationUserId>();
-                    services.AddTransient<IValidator<SignInCredentials>, SignInCredentialsValidator>();
-                    services.AddTransient<SignIn>();
-                    services.AddTransient<CreateBasicAuthUser>();
-                    services.AddTransient<VerifyBasicAuthCredentials>();
-                    CookieAuthenticationConfiguration.Configure(services);
-                    break;
-                default:
-                    Console.WriteLine("Warning: no authentication has been configured. The system is insecure.");
-                    break;
+                JwtBearerAuthenticationConfiguration.Configure(services);
             }
 
-            services.AddScoped<ICurrentIdentity, CurrentIdentity>();
+            // Basic Auth
+            if (this.AuthenticationType == AuthenticationTypes.Basic)
+            {
+                Console.WriteLine("Warning: Basic authentication has been configured. The system is insecure.");
+                BasicAuthenticationConfiguration.Configure(services);
+            }
 
-            // register persistence services
-            var databaseConfiguration =
-                new CQRSDatabaseConfiguration<AuthenticationDbContext, AuthenticationQueryDbContext,
-                    AuthenticationWriteDbContext>();
-            databaseConfiguration.RegisterDatabases(services);
+            // APS.NET Cookie Auth
+            if (this.AuthenticationType == AuthenticationTypes.Cookies)
+            {
+                services.AddTransient<IValidator<SignInCredentials>, SignInCredentialsValidator>();
+                services.AddTransient<SignIn>();
+                CookieAuthenticationConfiguration.Configure(services);
+            }
 
             return services;
         }
@@ -105,10 +117,8 @@ namespace EngineBay.Authentication
         {
             AuthorizationEndpoints.MapEndpoints(endpoints);
 
-            var authenticationType = AuthenticationConfiguration.GetAuthenticationMethod();
-
 #pragma warning disable ASP0022 // allow duplicate routes for each of the authentication providers
-            switch (authenticationType)
+            switch (this.AuthenticationType)
             {
                 case AuthenticationTypes.JwtBearer:
                     endpoints.MapPost(
@@ -190,7 +200,11 @@ namespace EngineBay.Authentication
         {
             ArgumentNullException.ThrowIfNull(dbContextOptionsFactory);
 
-            return new IModuleDbContext[] { new AuthenticationDbContext(dbContextOptionsFactory.GetDbContextOptions<ModuleWriteDbContext>()) };
+            var moduleDbContexts = new List<IModuleDbContext>();
+            moduleDbContexts.Add(new AuthenticationDbContext(dbContextOptionsFactory.GetDbContextOptions<ModuleWriteDbContext>()));
+            moduleDbContexts.Add(new AuthorizationDbContext(dbContextOptionsFactory.GetDbContextOptions<ModuleWriteDbContext>()));
+
+            return moduleDbContexts;
         }
 
         public override void SeedDatabase(string seedDataPath, IServiceProvider serviceProvider)
