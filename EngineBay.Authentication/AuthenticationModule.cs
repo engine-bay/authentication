@@ -7,7 +7,6 @@ namespace EngineBay.Authentication
     using EngineBay.Persistence;
     using FluentValidation;
     using Microsoft.AspNetCore.Authentication;
-    using Microsoft.EntityFrameworkCore;
 
     public class AuthenticationModule : BaseModule, IDatabaseModule
     {
@@ -187,10 +186,11 @@ namespace EngineBay.Authentication
             return app;
         }
 
-        public IReadOnlyCollection<IModuleDbContext> GetRegisteredDbContexts(
-            DbContextOptions<ModuleWriteDbContext> dbOptions)
+        public IReadOnlyCollection<IModuleDbContext> GetRegisteredDbContexts(IDbContextOptionsFactory dbContextOptionsFactory)
         {
-            return new IModuleDbContext[] { new AuthenticationDbContext(dbOptions) };
+            ArgumentNullException.ThrowIfNull(dbContextOptionsFactory);
+
+            return new IModuleDbContext[] { new AuthenticationDbContext(dbContextOptionsFactory.GetDbContextOptions<ModuleWriteDbContext>()) };
         }
 
         public override void SeedDatabase(string seedDataPath, IServiceProvider serviceProvider)
