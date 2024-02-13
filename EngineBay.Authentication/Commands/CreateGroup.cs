@@ -7,11 +7,11 @@ namespace EngineBay.Authentication
 
     public class CreateGroup : ICommandHandler<CreateGroupDto, GroupDto>
     {
-        private readonly AuthenticationDbContext authDb;
+        private readonly AuthorizationWriteDbContext authDb;
         private readonly IValidator<CreateGroupDto> validator;
 
         public CreateGroup(
-            AuthenticationDbContext authDb,
+            AuthorizationWriteDbContext authDb,
             IValidator<CreateGroupDto> validator)
         {
             this.authDb = authDb;

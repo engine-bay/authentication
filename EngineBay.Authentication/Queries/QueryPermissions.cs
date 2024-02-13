@@ -8,9 +8,9 @@ namespace EngineBay.Authentication
 
     public class QueryPermissions : PaginatedQuery<Permission>, IQueryHandler<PaginationParameters, PaginatedDto<PermissionDto>>
     {
-        private readonly AuthenticationDbContext dbContext;
+        private readonly AuthorizationQueryDbContext dbContext;
 
-        public QueryPermissions(AuthenticationDbContext dbContext)
+        public QueryPermissions(AuthorizationQueryDbContext dbContext)
         {
             this.dbContext = dbContext;
         }

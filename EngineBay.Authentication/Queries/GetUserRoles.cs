@@ -5,9 +5,9 @@ namespace EngineBay.Authentication
 
     public class GetUserRoles : IQueryHandler<Guid, UserRoleDto>
     {
-        private readonly AuthenticationDbContext authDb;
+        private readonly AuthorizationQueryDbContext authDb;
 
-        public GetUserRoles(AuthenticationDbContext authDb)
+        public GetUserRoles(AuthorizationQueryDbContext authDb)
         {
             this.authDb = authDb;
         }

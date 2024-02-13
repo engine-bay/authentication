@@ -5,9 +5,9 @@ namespace EngineBay.Authentication
 
     public class GetGroup : IQueryHandler<Guid, GroupDto>
     {
-        private readonly AuthenticationDbContext authDb;
+        private readonly AuthorizationQueryDbContext authDb;
 
-        public GetGroup(AuthenticationDbContext authDb)
+        public GetGroup(AuthorizationQueryDbContext authDb)
         {
             this.authDb = authDb;
         }
